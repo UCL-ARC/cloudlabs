@@ -1,0 +1,71 @@
+.nav-links {
+	margin: 0;
+	padding: 0;
+}
+
+.nav-links .nav-link {
+	border-left: 12px solid var(--color-primary);
+	border-bottom: 1px solid var(--color-primary-dark);
+	padding: 1rem 0.4rem 1rem 1rem;
+	box-shadow: 0px 1px 2px var(--color-primary-dark);
+	display: flex;
+	justify-content: space-between;
+}
+
+.nav-links .nav-link.active {
+	border-left-color: var(--color-primary-dark);
+	font-weight: 500;
+}
+
+.nav-links .nav-link::after {
+	content: "\276f";
+	align-self: center;
+	font-size: 0.8rem;
+	margin-right: 0.7rem;
+	color: var(--color-primary-dark);
+}
+
+.nav-links .nav-link.active::after {
+	font-size: 1rem;
+	font-weight: 600;
+}
+
+.nav-links a {
+	font-size: 0.9rem;
+	font-weight: 300;
+	color: var(--color-primary-darker);
+	text-decoration: none;
+}
+
+@media (min-width: 992px) {
+	.nav-links a {
+		font-size: 1rem;
+	}
+}
+
+@media (min-width: 1900px) {
+	.nav-links a {
+		font-size: 1.3rem;
+	}
+	.nav-links .nav-link {
+		padding: 1.1rem 0.4rem 1.1rem 1rem;
+	}
+}
+
+@media (min-width: 2500px) {
+	.nav-links a {
+		font-size: 2rem;
+	}
+
+	.nav-links .nav-link {
+		padding: 1.6rem 0.5rem 1.6rem 1.3rem;
+	}
+
+	.nav-links .nav-link::after {
+		font-size: 1.3rem;
+	}
+
+	.nav-links .nav-link.active::after {
+		font-size: 1.6rem;
+	}
+}

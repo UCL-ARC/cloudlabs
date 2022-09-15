@@ -1,0 +1,55 @@
+.media-item {
+	margin: 1rem 0;
+}
+
+.media-item__content {
+	padding: 0;
+}
+
+.media-item__info {
+	padding: 1rem;
+	text-align: center;
+}
+
+.media-item__file img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+}
+
+.media-item__file video {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+}
+
+.media-item__info h2,
+.media-item__info h3,
+.media-item__info p {
+	margin: 0 0 0.5rem 0;
+}
+
+.media-item__actions {
+	padding: 1rem;
+	text-align: center;
+	border-top: 1px solid #ccc;
+}
+
+.media-item__modal-content {
+	padding: 0;
+}
+
+.media-item__modal-actions {
+	text-align: right;
+}
+
+.media-item__actions button,
+.media-item__actions a {
+	margin: 0.5rem;
+}
+
+@media (min-width: 768px) {
+	.media-item__image {
+		height: 20rem;
+	}
+}
