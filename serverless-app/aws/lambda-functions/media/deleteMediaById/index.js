@@ -3,7 +3,7 @@ const aws = require("aws-sdk");
 const dynamoClient = new aws.DynamoDB.DocumentClient({
     region: "eu-west-2",
 });
-const tableName = "cloudlabs-basic-db-userMedia";
+const tableName = "cloudlabs-basic-userMedia-db";
 
 const deleteMedia = async (username, mediaId) => {
     const params = {

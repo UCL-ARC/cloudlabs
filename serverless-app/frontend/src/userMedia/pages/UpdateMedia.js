@@ -20,7 +20,7 @@ const UpdateMedia = () => {
     const auth = useContext(AuthContext);
     const { isLoading, error, sendRequest, clearError } = useHttpClient();
     const [loadedMedia, setLoadedMedia] = useState();
-    const creator = useParams().creator;
+    const username = useParams().username;
     const mediaId = useParams().mediaId;
     const navigate = useNavigate();
 
@@ -42,7 +42,7 @@ const UpdateMedia = () => {
         const fetchSingleMedia = async () => {
             try {
                 const responseData = await sendRequest(
-                    `${process.env.REACT_APP_BACKEND_URL}/media/${creator}/${mediaId}`
+                    `${process.env.REACT_APP_BACKEND_URL}/media/${username}/${mediaId}`
                 );
 
                 setLoadedMedia(responseData.Items[0]);
@@ -62,7 +62,7 @@ const UpdateMedia = () => {
             } catch (err) {}
         };
         fetchSingleMedia();
-    }, [sendRequest, creator, setFormData]);
+    }, [sendRequest, username, setFormData]);
 
     const mediaUpdateSubmitHandler = async (event) => {
         event.preventDefault();
@@ -121,7 +121,7 @@ const UpdateMedia = () => {
                         validators={[VALIDATOR_REQUIRE()]}
                         errorText="Please enter a valid title."
                         onInput={inputHandler}
-                        initialValue={loadedMedia.MediaName}
+                        initialValue={loadedMedia.MediaTitle}
                         initialValid={true}
                     />
 

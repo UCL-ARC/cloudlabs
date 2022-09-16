@@ -33,7 +33,7 @@ function App() {
                 <Route path="/media/new" element={<NewMedia />} />
 
                 <Route
-                    path="/media/:creator/:mediaId"
+                    path="/media/:username/:mediaId"
                     element={<UpdateMedia />}
                 />
 

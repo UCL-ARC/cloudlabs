@@ -4,6 +4,7 @@ const { v4: uuidv4 } = require("uuid");
 const dynamoClient = new aws.DynamoDB.DocumentClient({
     region: "eu-west-2",
 });
+const tableName = "cloudlabs-basic-userMedia-db";
 
 exports.handler = async (event, context) => {
     const username = event.requestContext.authorizer.lambda.username;
@@ -26,7 +27,7 @@ exports.handler = async (event, context) => {
     const fileType = body.fileType;
 
     const createdMedia = {
-        MediaName: title,
+        MediaTitle: title,
         MediaDescription: description,
         FileLocation: fileLocation,
         FileType: fileType,
@@ -56,15 +57,15 @@ exports.handler = async (event, context) => {
     }
 
     const params = {
-        TableName: "cloudlabs-basic-db-userMedia",
+        TableName: tableName,
         Key: {
             pk: username,
             sk: "media." + uuidv4(),
         },
         UpdateExpression:
-            "set MediaName = :title, MediaDescription = :description, FileLocation = :fileLocation, FileType = :fileType, GSI1 = :GSI1",
+            "set MediaTitle = :title, MediaDescription = :description, FileLocation = :fileLocation, FileType = :fileType, GSI1 = :GSI1",
         ExpressionAttributeValues: {
-            ":title": createdMedia.MediaName,
+            ":title": createdMedia.MediaTitle,
             ":description": createdMedia.MediaDescription,
             ":fileLocation": createdMedia.FileLocation,
             ":fileType": createdMedia.FileType,
@@ -89,7 +90,7 @@ exports.handler = async (event, context) => {
 
 const findExistingUser = async (username) => {
     const params = {
-        TableName: "cloudlabs-basic-db-userMedia",
+        TableName: tableName,
         KeyConditionExpression: "#pk = :pk and begins_with(#sk, :sk)",
         ExpressionAttributeNames: {
             "#pk": "pk",

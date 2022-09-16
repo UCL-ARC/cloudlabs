@@ -6,10 +6,9 @@ const { v4: uuidv4 } = require("uuid");
 const dynamoClient = new aws.DynamoDB.DocumentClient({
     region: "eu-west-2",
 });
-const tableName = "cloudlabs-basic-db-userMedia";
+const tableName = "cloudlabs-basic-userMedia-db";
 
 exports.handler = async (event, context) => {
-    // todo: need to upload avatar to S3 and extract file location here
     if (event.body == null) {
         const response = {
             statusCode: 422,
@@ -79,13 +78,14 @@ exports.handler = async (event, context) => {
         return response;
     }
 
+    // not currently storing user avatar images, but below is several ways you could do this
     const createdUser = {
         pk: username,
         sk: "user." + uuidv4(),
         UserName: username,
         UserEmail: email,
         UserPassword: hashedPassword,
-        UserImage: "test",
+        //UserImage: body.fileLocation,
         //UserImage: req.file.location,
         //UserImage: req.file.path,
         GSI1: "user",

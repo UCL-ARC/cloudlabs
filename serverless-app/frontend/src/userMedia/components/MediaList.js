@@ -26,7 +26,7 @@ const MediaList = (props) => {
                     key={item.sk}
                     id={item.sk}
                     fileLocation={item.FileLocation}
-                    title={item.MediaName}
+                    title={item.MediaTitle}
                     description={item.MediaDescription}
                     fileType={item.FileType}
                     creator={item.pk}

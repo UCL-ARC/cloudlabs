@@ -5,7 +5,7 @@ const jwt = require("jsonwebtoken");
 const dynamoClient = new aws.DynamoDB.DocumentClient({
     region: "eu-west-2",
 });
-const tableName = "cloudlabs-basic-db-userMedia";
+const tableName = "cloudlabs-basic-userMedia-db";
 
 exports.handler = async (event, context) => {
     if (event.body == null) {
@@ -103,10 +103,11 @@ exports.handler = async (event, context) => {
         return response;
     }
 
+    // not currently using user avatar images
     const userData = JSON.stringify({
         username: existingUser.Items[0].pk,
         userId: existingUser.Items[0].sk,
-        image: existingUser.Items[0].UserImage,
+        //image: existingUser.Items[0].UserImage,
         token: token,
     });
 
