@@ -14,7 +14,7 @@ import { useForm } from "../../shared/hooks/form-hook";
 import { useHttpClient } from "../../shared/hooks/http-hook";
 import { AuthContext } from "../../shared/context/auth-context";
 
-import { handleUpload } from "../../shared/util/fileUpload";
+import { handleUpload } from "../../shared/util/fileHandler";
 
 import "./NewMedia.css";
 

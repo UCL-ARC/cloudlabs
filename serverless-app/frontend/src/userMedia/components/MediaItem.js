@@ -8,6 +8,8 @@ import LoadingSpinner from "../../shared/components/UIElements/LoadingSpinner";
 import { AuthContext } from "../../shared/context/auth-context";
 import { useHttpClient } from "../../shared/hooks/http-hook";
 
+import { handleFileDelete } from "../../shared/util/fileHandler";
+
 import "./MediaItem.css";
 
 const MediaItem = (props) => {
@@ -25,8 +27,6 @@ const MediaItem = (props) => {
         fileType,
     } = props;
 
-    console.log(props);
-
     const showDeleteWarningHandler = () => {
         setShowConfirmModal(true);
     };
@@ -37,7 +37,13 @@ const MediaItem = (props) => {
 
     const confirmDeleteHandler = async () => {
         setShowConfirmModal(false);
+
         try {
+            // does this need more robust error handling?
+            // may not currently work, need to check on the filehandler
+            const deletedFile = await handleFileDelete(fileLocation);
+            console.log(deletedFile);
+
             await sendRequest(
                 `${process.env.REACT_APP_BACKEND_URL}/media/${id}`,
                 "DELETE",
