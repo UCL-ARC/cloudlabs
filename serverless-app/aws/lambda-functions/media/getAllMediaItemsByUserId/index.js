@@ -5,17 +5,18 @@ const dynamoClient = new aws.DynamoDB.DocumentClient({
 });
 const tableName = "cloudlabs-basic-userMedia-db";
 
-const getUserMedia = async (username, mediaId) => {
+const getAllMediaItemsByUserId = async (username) => {
     const params = {
         TableName: tableName,
+        IndexName: "GSI1-pk-index",
         KeyConditionExpression: "#pk = :pk and #sk = :sk",
         ExpressionAttributeNames: {
-            "#pk": "pk",
-            "#sk": "sk",
+            "#pk": "GSI1",
+            "#sk": "pk",
         },
         ExpressionAttributeValues: {
-            ":pk": username,
-            ":sk": mediaId,
+            ":pk": "media",
+            ":sk": username,
         },
     };
 
@@ -31,26 +32,15 @@ const getUserMedia = async (username, mediaId) => {
 
 exports.handler = async (event, context) => {
     const username = event.pathParameters.username;
-    const mediaId = event.pathParameters.mediaId;
 
     let userMedia;
     try {
-        userMedia = await getUserMedia(username, mediaId);
+        userMedia = await getAllMediaItemsByUserId(username);
     } catch (err) {
         const response = {
             statusCode: 500,
             body: JSON.stringify({
-                message: "Something went wrong, could not find a media item.",
-            }),
-        };
-        return response;
-    }
-
-    if (userMedia.Count === 0 || userMedia.Items.length === 0) {
-        const response = {
-            statusCode: 404,
-            body: JSON.stringify({
-                message: "Could not find media for the provided id.",
+                message: "Something went wrong. Could not get media items.",
             }),
         };
         return response;

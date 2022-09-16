@@ -5,12 +5,12 @@ const dynamoClient = new aws.DynamoDB.DocumentClient({
 });
 const tableName = "cloudlabs-basic-userMedia-db";
 
-const deleteMedia = async (username, mediaId) => {
+const deleteMediaItem = async (username, mediaItemId) => {
     const params = {
         TableName: tableName,
         Key: {
             pk: username,
-            sk: mediaId,
+            sk: mediaItemId,
         },
     };
 
@@ -23,12 +23,12 @@ const deleteMedia = async (username, mediaId) => {
 
 exports.handler = async (event, context) => {
     const username = event.requestContext.authorizer.lambda.username;
-    const mediaId = event.pathParameters.mediaId;
+    const mediaItemId = event.pathParameters.mediaItemId;
 
-    // todo: find the place first and then compare the place creator username to the current username
+    // todo: find the place first and then compare the media item creator username to the current username
 
     try {
-        await deleteMedia(username, mediaId);
+        await deleteMediaItem(username, mediaItemId);
     } catch (err) {
         const response = {
             statusCode: 422,

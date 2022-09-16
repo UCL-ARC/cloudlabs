@@ -98,12 +98,12 @@ const findExistingMedia = async (username, mediaItemId) => {
         },
     };
 
-    let userMedia;
+    let userMediaItem;
     try {
-        userMedia = await dynamoClient.query(params).promise();
+        userMediaItem = await dynamoClient.query(params).promise();
     } catch (err) {
         throw err;
     }
 
-    return userMedia;
+    return userMediaItem;
 };

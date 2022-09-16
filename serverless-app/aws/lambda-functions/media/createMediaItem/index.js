@@ -21,16 +21,11 @@ exports.handler = async (event, context) => {
 
     const body = JSON.parse(event.body);
 
-    const title = body.title;
-    const description = body.description;
-    const fileLocation = body.fileLocation;
-    const fileType = body.fileType;
-
-    const createdMedia = {
-        MediaTitle: title,
-        MediaDescription: description,
-        FileLocation: fileLocation,
-        FileType: fileType,
+    const createdMediaItem = {
+        MediaTitle: body.title,
+        MediaDescription: body.description,
+        FileLocation: body.fileLocation, // upload to S3 currently happens on the frontend, move to a lambda instead?
+        FileType: body.fileType,
     };
 
     let user;
@@ -50,7 +45,7 @@ exports.handler = async (event, context) => {
         const response = {
             statusCode: 404,
             body: JSON.stringify({
-                message: "Could not find user for provided email.",
+                message: "Could not find user for provided credentials.",
             }),
         };
         return response;
@@ -65,10 +60,10 @@ exports.handler = async (event, context) => {
         UpdateExpression:
             "set MediaTitle = :title, MediaDescription = :description, FileLocation = :fileLocation, FileType = :fileType, GSI1 = :GSI1",
         ExpressionAttributeValues: {
-            ":title": createdMedia.MediaTitle,
-            ":description": createdMedia.MediaDescription,
-            ":fileLocation": createdMedia.FileLocation,
-            ":fileType": createdMedia.FileType,
+            ":title": createdMediaItem.MediaTitle,
+            ":description": createdMediaItem.MediaDescription,
+            ":fileLocation": createdMediaItem.FileLocation,
+            ":fileType": createdMediaItem.FileType,
             ":GSI1": "media",
         },
     };
@@ -85,7 +80,7 @@ exports.handler = async (event, context) => {
         return response;
     }
 
-    return { media: createdMedia };
+    return { media: createdMediaItem };
 };
 
 const findExistingUser = async (username) => {
