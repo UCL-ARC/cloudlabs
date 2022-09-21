@@ -18,21 +18,22 @@ export const handleUpload = async (file) => {
 
     const newFileName = formatFileName(file);
 
-    // need a try catch here
-    const uploadedFile = await ReactS3Client.uploadFile(file, newFileName);
+    let uploadedFile;
+    try {
+        console.log("uploading file to S3");
+        uploadedFile = await ReactS3Client.uploadFile(file, newFileName);
+    } catch (err) {
+        console.log(err);
+    }
 
     return uploadedFile;
 };
 
-export const handleFileDelete = async (fileLocation) => {
+export const handleFileDelete = async (s3Filename) => {
     const ReactS3Client = new S3(config);
     /*  Notice that if you don't provide a dirName, the file will be automatically uploaded to the root of your bucket */
 
-    const fileNameToDelete = getFileNameToDelete(fileLocation);
-
-    if (fileNameToDelete == null) throw new Error("filename not found");
-
-    const deletedFile = await ReactS3Client.deleteFile(fileNameToDelete);
+    const deletedFile = await ReactS3Client.deleteFile(s3Filename);
 
     return deletedFile;
 };
@@ -44,6 +45,8 @@ const formatFileName = (file) => {
 
     const newFileName = `${cleanFileName}-${date}-${randomString}`;
 
+    console.log(newFileName);
+
     // maximum of 60 characters
     return newFileName.substring(0, 60);
 };
@@ -51,16 +54,4 @@ const formatFileName = (file) => {
 const getDate = () => {
     let today = new Date();
     return today.toISOString().split("T")[0];
-};
-
-const getFileNameToDelete = (fileLocation) => {
-    // file name exists after the folder name which is media/
-    // the +7 is the number of characters to move forwards to get to the filename
-
-    // not currently storing files in an S3 child folder... so come back and check this
-    const parsedFileName = fileLocation.substring(
-        fileLocation.indexOf("/media/") + 7
-    );
-
-    return parsedFileName;
 };

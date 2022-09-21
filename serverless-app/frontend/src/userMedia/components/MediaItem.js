@@ -18,13 +18,14 @@ const MediaItem = (props) => {
     const [showConfirmModal, setShowConfirmModal] = useState(false);
 
     const {
-        creator,
+        username,
         description,
         id,
         fileLocation,
         onDelete,
         title,
         fileType,
+        s3Filename,
     } = props;
 
     const showDeleteWarningHandler = () => {
@@ -39,10 +40,11 @@ const MediaItem = (props) => {
         setShowConfirmModal(false);
 
         try {
-            // does this need more robust error handling?
-            // may not currently work, need to check on the filehandler
-            const deletedFile = await handleFileDelete(fileLocation);
-            console.log(deletedFile);
+            const response = await handleFileDelete(s3Filename);
+
+            if (!response.ok) {
+                throw new Error(response.message);
+            }
 
             await sendRequest(
                 `${process.env.REACT_APP_BACKEND_URL}/media/${id}`,
@@ -53,7 +55,9 @@ const MediaItem = (props) => {
                 }
             );
             onDelete(id);
-        } catch (err) {}
+        } catch (err) {
+            console.log(err);
+        }
     };
 
     return (
@@ -105,11 +109,13 @@ const MediaItem = (props) => {
                     </div>
 
                     <div className="media-item__actions">
-                        {auth.username === creator && (
-                            <Button to={`/media/${creator}/${id}`}>EDIT</Button>
+                        {auth.username === username && (
+                            <Button to={`/media/${username}/${id}`}>
+                                EDIT
+                            </Button>
                         )}
 
-                        {auth.username === creator && (
+                        {auth.username === username && (
                             <Button danger onClick={showDeleteWarningHandler}>
                                 DELETE
                             </Button>

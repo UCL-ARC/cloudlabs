@@ -45,6 +45,8 @@ const UpdateMedia = () => {
                     `${process.env.REACT_APP_BACKEND_URL}/media/${username}/${mediaId}`
                 );
 
+                console.log(responseData);
+
                 setLoadedMedia(responseData.Items[0]);
                 setFormData(
                     {

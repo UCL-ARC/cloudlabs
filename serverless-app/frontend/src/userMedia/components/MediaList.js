@@ -29,7 +29,8 @@ const MediaList = (props) => {
                     title={item.MediaTitle}
                     description={item.MediaDescription}
                     fileType={item.FileType}
-                    creator={item.pk}
+                    s3Filename={item.S3Filename}
+                    username={item.pk}
                     onDelete={onDeleteMedia}
                 />
             ))}

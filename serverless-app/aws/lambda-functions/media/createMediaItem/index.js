@@ -26,6 +26,7 @@ exports.handler = async (event, context) => {
         MediaDescription: body.description,
         FileLocation: body.fileLocation, // upload to S3 currently happens on the frontend, move to a lambda instead?
         FileType: body.fileType,
+        S3Filename: body.s3Filename,
     };
 
     let user;
@@ -58,12 +59,13 @@ exports.handler = async (event, context) => {
             sk: "media." + uuidv4(),
         },
         UpdateExpression:
-            "set MediaTitle = :title, MediaDescription = :description, FileLocation = :fileLocation, FileType = :fileType, GSI1 = :GSI1",
+            "set MediaTitle = :title, MediaDescription = :description, FileLocation = :fileLocation, FileType = :fileType, S3Filename = :s3Filename, GSI1 = :GSI1",
         ExpressionAttributeValues: {
             ":title": createdMediaItem.MediaTitle,
             ":description": createdMediaItem.MediaDescription,
             ":fileLocation": createdMediaItem.FileLocation,
             ":fileType": createdMediaItem.FileType,
+            ":s3Filename": createdMediaItem.S3Filename,
             ":GSI1": "media",
         },
     };

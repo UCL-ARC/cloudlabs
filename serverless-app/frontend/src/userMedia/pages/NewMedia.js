@@ -47,17 +47,24 @@ const NewMedia = () => {
         console.log(formState.inputs.file.value);
 
         // upload the file to S3
-        const uploadedFile = await handleUpload(formState.inputs.file.value);
+        let uploadedFile;
+        try {
+            uploadedFile = await handleUpload(formState.inputs.file.value);
+        } catch (err) {
+            console.log(err);
+        }
+
         console.log(uploadedFile);
         console.log("after upload");
 
         try {
             console.log("before database");
-            const formData = new FormData();
-            formData.append("title", formState.inputs.title.value);
-            formData.append("description", formState.inputs.description.value);
-            formData.append("fileLocation", uploadedFile.location);
-            formData.append("fileType", formState.inputs.file.value.type);
+            // const formData = new FormData();
+            // formData.append("title", formState.inputs.title.value);
+            // formData.append("description", formState.inputs.description.value);
+            // formData.append("fileLocation", uploadedFile.location);
+            // formData.append("fileType", formState.inputs.file.value.type);
+            // formData.append("s3Filename", uploadedFile.key);
 
             await sendRequest(
                 `${process.env.REACT_APP_BACKEND_URL}/media`,
@@ -69,6 +76,7 @@ const NewMedia = () => {
                     //image: formState.inputs.image.value,
                     fileLocation: uploadedFile.location,
                     fileType: formState.inputs.file.value.type,
+                    s3Filename: uploadedFile.key,
                 }),
                 {
                     Authorization: "Bearer " + auth.token,

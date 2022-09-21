@@ -33,7 +33,7 @@ const MainNavigation = () => {
                         </NavLink>
                     </li>
 
-                    <li>
+                    {/* <li>
                         <NavLink
                             to="/users"
                             className={(navData) =>
@@ -42,7 +42,7 @@ const MainNavigation = () => {
                         >
                             All User Media
                         </NavLink>
-                    </li>
+                    </li> */}
 
                     {auth.isLoggedIn && (
                         <li>
