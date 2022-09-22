@@ -13,7 +13,6 @@ const MainNavigation = () => {
 
     const logoutHandler = () => {
         auth.logout();
-        navigate("/");
     };
 
     return (

@@ -91,7 +91,7 @@ exports.handler = async (event, context) => {
                 userId: existingUser.Items[0].sk,
             },
             "alwkjfbaerG5H3jMV2qzT9",
-            { expiresIn: "1h" }
+            { expiresIn: "7d" }
         );
     } catch (err) {
         const response = {
