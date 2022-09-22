@@ -3,6 +3,8 @@ import MediaItem from "./MediaItem";
 import Button from "../../shared/components/FormElements/Button";
 import "./MediaList.css";
 
+const { v4: uuidv4 } = require("uuid");
+
 const MediaList = (props) => {
     const { items, onDeleteMedia } = props;
 
@@ -23,8 +25,8 @@ const MediaList = (props) => {
         <ul className="media-list">
             {items.map((item) => (
                 <MediaItem
-                    key={item.sk}
-                    id={item.sk}
+                    key={uuidv4()}
+                    mediaId={item.sk}
                     fileLocation={item.FileLocation}
                     title={item.MediaTitle}
                     description={item.MediaDescription}

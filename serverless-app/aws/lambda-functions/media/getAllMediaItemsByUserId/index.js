@@ -31,7 +31,7 @@ const getAllMediaItemsByUserId = async (username) => {
 };
 
 exports.handler = async (event, context) => {
-    const username = event.pathParameters.username;
+    const username = event.requestContext.authorizer.lambda.username;
 
     let userMedia;
     try {

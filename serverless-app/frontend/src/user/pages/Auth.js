@@ -107,7 +107,7 @@ const Auth = () => {
                         email: formState.inputs.email.value,
                         username: formState.inputs.username.value,
                         password: formState.inputs.password.value,
-                        image: formState.inputs.image.value,
+                        // image: formState.inputs.image.value,
                     }),
                     {
                         "Content-Type": "application/json",

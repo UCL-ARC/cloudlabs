@@ -26,7 +26,7 @@ function App() {
 
                 <Route path="/" element={<Home />} />
 
-                <Route path="/users" element={<Users />} />
+                {/* <Route path="/users" element={<Users />} /> */}
 
                 <Route path="/:username/media" element={<UserMedia />} />
 
@@ -47,9 +47,9 @@ function App() {
 
                 <Route path="/" element={<Home />} />
 
-                <Route path="/users" element={<Users />} />
+                {/* <Route path="/users" element={<Users />} /> */}
 
-                <Route path="/:username/media" element={<UserMedia />} />
+                {/* <Route path="/:username/media" element={<UserMedia />} /> */}
 
                 <Route path="/auth" element={<Auth />} />
 

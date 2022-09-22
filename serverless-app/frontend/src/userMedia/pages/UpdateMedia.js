@@ -41,8 +41,18 @@ const UpdateMedia = () => {
     useEffect(() => {
         const fetchSingleMedia = async () => {
             try {
+                // const responseData = await sendRequest(
+                //     `${process.env.REACT_APP_BACKEND_URL}/media/${username}/${mediaId}`
+                // );
+
+                // authorizing the GET request makes sure users can only access their own media and no one elses
                 const responseData = await sendRequest(
-                    `${process.env.REACT_APP_BACKEND_URL}/media/${username}/${mediaId}`
+                    `${process.env.REACT_APP_BACKEND_URL}/media/${username}/${mediaId}`,
+                    "GET",
+                    null,
+                    {
+                        Authorization: "Bearer " + auth.token,
+                    }
                 );
 
                 console.log(responseData);

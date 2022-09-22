@@ -20,7 +20,7 @@ const MediaItem = (props) => {
     const {
         username,
         description,
-        id,
+        mediaId,
         fileLocation,
         onDelete,
         title,
@@ -47,14 +47,14 @@ const MediaItem = (props) => {
             }
 
             await sendRequest(
-                `${process.env.REACT_APP_BACKEND_URL}/media/${id}`,
+                `${process.env.REACT_APP_BACKEND_URL}/media/${mediaId}`,
                 "DELETE",
                 null,
                 {
                     Authorization: "Bearer " + auth.token,
                 }
             );
-            onDelete(id);
+            onDelete(mediaId);
         } catch (err) {
             console.log(err);
         }
@@ -110,7 +110,7 @@ const MediaItem = (props) => {
 
                     <div className="media-item__actions">
                         {auth.username === username && (
-                            <Button to={`/media/${username}/${id}`}>
+                            <Button to={`/media/${username}/${mediaId}`}>
                                 EDIT
                             </Button>
                         )}
