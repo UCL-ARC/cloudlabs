@@ -47,65 +47,10 @@ resource "aws_dynamodb_table" "user-places-table" {
   }
 }
 
-### THE WEB-SITE BUCKET
-resource "aws_s3_bucket" "serverless_app_website" {
-  tags = {
-    Name = "S3BucketForServerlessAppWebsite"
-  }
-}
-
-resource "aws_s3_bucket_acl" "web_bucket_acl" {
-  bucket = aws_s3_bucket.serverless_app_website.id
-  acl    = "public-read"
-}
-
-resource "aws_s3_bucket_website_configuration" "serverless_app_web_config" {
-  bucket = aws_s3_bucket.serverless_app_website.id
-  index_document {
-    suffix = "index.html"
-  }
-
-  error_document {
-    key = "error.html"
-  }
-}
-
-resource "aws_s3_bucket_policy" "serverless_app_web_policy" {
-  bucket = aws_s3_bucket.serverless_app_website.id
-
-  policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Sid       = "PublicReadGetObject"
-        Effect    = "Allow"
-        Principal = "*"
-        Action    = "s3:GetObject"
-        Resource = [
-          aws_s3_bucket.serverless_app_website.arn,
-          "${aws_s3_bucket.serverless_app_website.arn}/*",
-        ]
-      },
-    ]
-  })
-}
 
 ### SECTION FOR DECLARING S3 Buckets  
 ### S3 is used to store and run the lambda functions
 ###
-#S3 Bucket to store the lambda functions and web app in
-
-
-resource "aws_s3_bucket" "lambda_bucket_for_serverless_app" {
-  tags = {
-    Name = "TestBucketForServerlessApp"
-  }
-}
-
-resource "aws_s3_bucket_acl" "lambda_bucket_acl" {
-  bucket = aws_s3_bucket.lambda_bucket_for_serverless_app.id
-  acl    = "private"
-}
 
 ### SECTION FOR DECLARING LAMBDA FUNCTIONS
 ### there are 2 lambda functions
@@ -115,72 +60,8 @@ resource "aws_s3_bucket_acl" "lambda_bucket_acl" {
 
 # Local Lambda Functions to be zipped up and uploaded to the S3 bucket
 # the first is the lambda function authenticating users
-data "archive_file" "auth_lambda" {
-  type        = "zip"
-  source_dir  = "${path.module}/lambda-functions/auth"
-  output_path = "${path.module}/auth-serverless.zip"
-}
-
-# this lambda function are the user-api lambdas
-data "archive_file" "apis_lambda" {
-  type        = "zip"
-  source_dir  = "${path.module}/lambda-functions/apis"
-  output_path = "${path.module}/apis.zip"
-}
-
-#the S3 object for the authenticating lambda function
-resource "aws_s3_object" "serverless_auth_object" {
-  bucket = aws_s3_bucket.lambda_bucket_for_serverless_app.id
-  key    = "auth-serverless.zip"
-  source = data.archive_file.auth_lambda.output_path
-  etag   = filemd5(data.archive_file.auth_lambda.output_path)
-}
-
-#the S3 object for the user api lambda functions
-resource "aws_s3_object" "serverless_apis_object" {
-  bucket = aws_s3_bucket.lambda_bucket_for_serverless_app.id
-  key    = "apis.zip"
-  source = data.archive_file.apis_lambda.output_path
-  etag   = filemd5(data.archive_file.apis_lambda.output_path)
-}
-
-# define the authorisation lambda functions
-resource "aws_lambda_function" "authorisation_lambda" {
-  function_name    = "AuthoriseUser"
-  s3_bucket        = aws_s3_bucket.lambda_bucket_for_serverless_app.id
-  s3_key           = aws_s3_object.serverless_auth_object.key
-  runtime          = "nodejs12.x"
-  handler          = "index.handler"
-  source_code_hash = data.archive_file.auth_lambda.output_base64sha256
-  role             = aws_iam_role.lambda_exec.arn
-}
-
-# define the user api lambda function
-resource "aws_lambda_function" "user_apis_lambda" {
-  function_name    = "UserAPIs"
-  s3_bucket        = aws_s3_bucket.lambda_bucket_for_serverless_app.id
-  s3_key           = aws_s3_object.serverless_apis_object.key
-  runtime          = "nodejs12.x"
-  handler          = "index.handler"
-  source_code_hash = data.archive_file.apis_lambda.output_base64sha256
-  role             = aws_iam_role.lambda_exec.arn
-}
 
 
-# This gives the API Gateway permission to use the authorization and user APIs lambdas
-resource "aws_lambda_permission" "api_gateway_authorization_permission" {
-  statement_id  = "AllowAPIGatewayAuthorization"
-  function_name = aws_lambda_function.authorisation_lambda.function_name
-  action        = "lambda:InvokeFunction"
-  principal     = "apigateway.amazonaws.com"
-}
-
-resource "aws_lambda_permission" "api_gateway_userapis_permission" {
-  statement_id  = "AllowAPIGatewayUserAPIS"
-  function_name = aws_lambda_function.user_apis_lambda.function_name
-  action        = "lambda:InvokeFunction"
-  principal     = "apigateway.amazonaws.com"
-}
 
 
 # The documentation isn't clear on this. But the IAM role needs 2 policy attachment, one for being able to
