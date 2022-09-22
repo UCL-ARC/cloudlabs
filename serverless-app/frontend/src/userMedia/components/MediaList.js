@@ -8,8 +8,6 @@ const { v4: uuidv4 } = require("uuid");
 const MediaList = (props) => {
     const { items, onDeleteMedia } = props;
 
-    console.log(items);
-
     if (items.length === 0) {
         return (
             <div className="media-list center">

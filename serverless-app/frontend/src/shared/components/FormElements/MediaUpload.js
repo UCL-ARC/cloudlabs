@@ -22,7 +22,6 @@ const MediaUpload = (props) => {
     }, [file]);
 
     const pickedHandler = (event) => {
-        console.log(event.target.files[0]);
         let pickedFile;
         let fileIsValid = isValid;
         if (event.target.files && event.target.files.length === 1) {

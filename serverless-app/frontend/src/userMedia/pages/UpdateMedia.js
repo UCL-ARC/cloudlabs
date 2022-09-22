@@ -55,8 +55,6 @@ const UpdateMedia = () => {
                     }
                 );
 
-                console.log(responseData);
-
                 setLoadedMedia(responseData.Items[0]);
                 setFormData(
                     {
@@ -94,7 +92,7 @@ const UpdateMedia = () => {
 
             navigate("/");
         } catch (err) {
-            console.log(error);
+            console.log(err);
         }
     };
 

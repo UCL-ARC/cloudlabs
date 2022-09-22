@@ -94,8 +94,6 @@ const Auth = () => {
                 formData.append("password", formState.inputs.password.value);
                 formData.append("image", formState.inputs.image.value);
 
-                console.log(formState.inputs.image.value);
-
                 // the commented out part below works for the express api but not for the lambda
                 // need to figure out why
                 const responseData = await sendRequest(
