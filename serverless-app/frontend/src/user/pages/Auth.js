@@ -5,7 +5,7 @@ import Input from "../../shared/components/FormElements/Input";
 import Button from "../../shared/components/FormElements/Button";
 import ErrorModal from "../../shared/components/UIElements/ErrorModal";
 import LoadingSpinner from "../../shared/components/UIElements/LoadingSpinner";
-import MediaUpload from "../../shared/components/FormElements/MediaUpload";
+import FileUpload from "../../shared/components/FormElements/FileUpload";
 import {
     VALIDATOR_EMAIL,
     VALIDATOR_MINLENGTH,
@@ -148,7 +148,7 @@ const Auth = () => {
                     )}
 
                     {!isLoginMode && (
-                        <MediaUpload
+                        <FileUpload
                             center
                             id="image"
                             onInput={inputHandler}

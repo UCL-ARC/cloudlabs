@@ -5,7 +5,7 @@ import Input from "../../shared/components/FormElements/Input";
 import Button from "../../shared/components/FormElements/Button";
 import ErrorModal from "../../shared/components/UIElements/ErrorModal";
 import LoadingSpinner from "../../shared/components/UIElements/LoadingSpinner";
-import MediaUpload from "../../shared/components/FormElements/MediaUpload";
+import FileUpload from "../../shared/components/FormElements/FileUpload";
 import {
     VALIDATOR_REQUIRE,
     VALIDATOR_MINLENGTH,
@@ -109,7 +109,7 @@ const NewMedia = () => {
                     onInput={inputHandler}
                 />
 
-                <MediaUpload
+                <FileUpload
                     id="file"
                     onInput={inputHandler}
                     errorText="Please provide an image or video."
