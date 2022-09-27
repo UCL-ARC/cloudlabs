@@ -14,6 +14,8 @@ const UserMedia = () => {
 
     const username = useParams().username;
 
+    console.log(auth);
+
     useEffect(() => {
         const fetchMedia = async () => {
             // authorizing the GET request makes sure users can only access their own media and no one elses
