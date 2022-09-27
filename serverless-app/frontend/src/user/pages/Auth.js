@@ -5,7 +5,7 @@ import Input from "../../shared/components/FormElements/Input";
 import Button from "../../shared/components/FormElements/Button";
 import ErrorModal from "../../shared/components/UIElements/ErrorModal";
 import LoadingSpinner from "../../shared/components/UIElements/LoadingSpinner";
-import FileUpload from "../../shared/components/FormElements/FileUpload";
+import SignupConfirm from "../components/SignupConfirm";
 import {
     VALIDATOR_EMAIL,
     VALIDATOR_MINLENGTH,
@@ -15,12 +15,15 @@ import {
 import { useForm } from "../../shared/hooks/form-hook";
 import { useHttpClient } from "../../shared/hooks/http-hook";
 import { AuthContext } from "../../shared/context/auth-context";
+import UserPool from "../../shared/util/UserPool";
 
 import "./Auth.css";
 
 const Auth = () => {
     const auth = useContext(AuthContext);
     const [isLoginMode, setIsLoginMode] = useState(true);
+    const [showSignupConfirm, setShowSignupConfirm] = useState(false);
+    const [cognitoData, setCognitoData] = useState(null);
     const { isLoading, error, sendRequest, clearError } = useHttpClient();
 
     const [formState, inputHandler, setFormData] = useForm(
@@ -43,7 +46,6 @@ const Auth = () => {
                 {
                     ...formState.inputs,
                     email: undefined,
-                    image: undefined,
                 },
                 formState.inputs.email.isValid &&
                     formState.inputs.password.isValid
@@ -52,10 +54,6 @@ const Auth = () => {
             setFormData(
                 {
                     ...formState.inputs,
-                    image: {
-                        value: null,
-                        isValid: false,
-                    },
                 },
                 false
             );
@@ -85,41 +83,61 @@ const Auth = () => {
                     responseData.token,
                     responseData.username
                 );
-            } catch (err) {}
+            } catch (err) {
+                console.log(err);
+            }
         } else {
             try {
-                const formData = new FormData();
-                formData.append("email", formState.inputs.email.value);
-                formData.append("username", formState.inputs.username.value);
-                formData.append("password", formState.inputs.password.value);
-                formData.append("image", formState.inputs.image.value);
+                // const formData = new FormData();
+                // formData.append("email", formState.inputs.email.value);
+                // formData.append("username", formState.inputs.username.value);
+                // formData.append("password", formState.inputs.password.value);
+                // formData.append("image", formState.inputs.image.value);
 
-                // the commented out part below works for the express api but not for the lambda
-                // need to figure out why
-                const responseData = await sendRequest(
-                    `${process.env.REACT_APP_BACKEND_URL}/users/signup`,
-                    // "POST",
-                    // formData
-                    "POST",
-                    JSON.stringify({
-                        email: formState.inputs.email.value,
-                        username: formState.inputs.username.value,
-                        password: formState.inputs.password.value,
-                        // image: formState.inputs.image.value,
-                    }),
-                    {
-                        "Content-Type": "application/json",
+                // // the commented out part below works for the express api but not for the lambda
+                // // need to figure out why
+                // const responseData = await sendRequest(
+                //     `${process.env.REACT_APP_BACKEND_URL}/users/signup`,
+                //     // "POST",
+                //     // formData
+                //     "POST",
+                //     JSON.stringify({
+                //         email: formState.inputs.email.value,
+                //         username: formState.inputs.username.value,
+                //         password: formState.inputs.password.value,
+                //         // image: formState.inputs.image.value,
+                //     }),
+                //     {
+                //         "Content-Type": "application/json",
+                //     }
+                // );
+
+                //let cognitoUser;
+                UserPool.signUp(
+                    formState.inputs.username.value,
+                    formState.inputs.password.value,
+                    [{ Name: "email", Value: formState.inputs.email.value }],
+                    null,
+                    (err, result) => {
+                        if (err) {
+                            console.log(err);
+                        }
+
+                        // console.log(result);
+                        // cognitoUser = result.user;
+                        // console.log("username is " + cognitoUser.getUsername());
+
+                        setCognitoData(result);
+                        setShowSignupConfirm(true);
                     }
-                );
-
-                auth.login(
-                    responseData.userId,
-                    responseData.token,
-                    responseData.username
                 );
             } catch (err) {}
         }
     };
+
+    if (showSignupConfirm) {
+        return <SignupConfirm cognitoData={cognitoData} />;
+    }
 
     return (
         <>
@@ -144,15 +162,6 @@ const Auth = () => {
                             ]}
                             errorText="Please enter a valid email."
                             onInput={inputHandler}
-                        />
-                    )}
-
-                    {!isLoginMode && (
-                        <FileUpload
-                            center
-                            id="image"
-                            onInput={inputHandler}
-                            errorText="Please provide an image."
                         />
                     )}
 

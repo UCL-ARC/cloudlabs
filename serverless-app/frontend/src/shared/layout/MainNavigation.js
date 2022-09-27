@@ -79,6 +79,7 @@ const MainNavigation = () => {
                             </NavLink>
                         </li>
                     )}
+
                     {auth.isLoggedIn && (
                         <li>
                             <div
@@ -89,6 +90,27 @@ const MainNavigation = () => {
                             </div>
                         </li>
                     )}
+
+                    {/* {!auth.isLoggedIn && (
+                        <li>
+                            <a href="https://cloudlabs-basic-user-media.auth.eu-west-2.amazoncognito.com/login?client_id=1t2qrjr63cj2h2tvf7b441ech2&response_type=token&scope=aws.cognito.signin.user.admin+email+openid+phone+profile&redirect_uri=http://localhost:3000/home/">
+                                Login / Register
+                            </a>
+                        </li>
+                    )} */}
+
+                    {/* {auth.isLoggedIn && (
+                        <li>
+                            <div
+                                className="logout-btn"
+                                onClick={() => logoutHandler()}
+                            >
+                                <a href="https://cloudlabs-basic-user-media.auth.eu-west-2.amazoncognito.com/logout?client_id=1t2qrjr63cj2h2tvf7b441ech2&logout_uri=http://localhost:3000/home/">
+                                    Logout
+                                </a>
+                            </div>
+                        </li>
+                    )} */}
                 </ul>
             </nav>
         </header>
