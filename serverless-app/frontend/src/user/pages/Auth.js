@@ -1,4 +1,11 @@
 import React, { useState, useContext } from "react";
+import {
+    CognitoUserPool,
+    CognitoUserAttribute,
+    CognitoUser,
+    AuthenticationDetails,
+} from "amazon-cognito-identity-js";
+import { useNavigate } from "react-router-dom";
 
 import Card from "../../shared/components/UIElements/Card";
 import Input from "../../shared/components/FormElements/Input";
@@ -27,6 +34,7 @@ const Auth = () => {
     const { isLoading, error, sendRequest, clearError } = useHttpClient();
     const [localError, setLocalError] = useState(null);
     const [signupWasSuccessful, setSignupWasSuccessful] = useState(null);
+    const navigate = useNavigate();
 
     console.log(cognitoData);
 
@@ -69,53 +77,46 @@ const Auth = () => {
         event.preventDefault();
 
         if (isLoginMode) {
-            try {
-                const responseData = await sendRequest(
-                    `${process.env.REACT_APP_BACKEND_URL}/users/login`,
-                    "POST",
-                    JSON.stringify({
-                        username: formState.inputs.username.value,
-                        password: formState.inputs.password.value,
-                    }),
-                    {
-                        "Content-Type": "application/json",
-                    }
-                );
+            const authenticationDetails = new AuthenticationDetails({
+                Username: formState.inputs.username.value,
+                Password: formState.inputs.password.value,
+            });
 
-                auth.login(
-                    responseData.userId,
-                    responseData.token,
-                    responseData.username
-                );
-            } catch (err) {
-                console.log(err);
-            }
+            const cognitoUser = new CognitoUser({
+                Username: formState.inputs.username.value,
+                Pool: UserPool,
+            });
+
+            cognitoUser.authenticateUser(authenticationDetails, {
+                onSuccess: function (result) {
+                    const accessToken = result.getAccessToken().getJwtToken();
+                    const username = result.getIdToken().decodePayload()[
+                        "cognito:username"
+                    ];
+                    const email = result.getIdToken().decodePayload().email;
+
+                    console.log(result);
+                    console.log(accessToken);
+                    console.log(
+                        result.getIdToken().decodePayload()["cognito:username"]
+                    );
+
+                    // need to look into best practices for auth flows and the refresh token
+                    auth.login(
+                        email,
+                        accessToken, // should this be the id token, or maybe I should store both?
+                        username
+                    );
+
+                    navigate("/");
+                },
+
+                onFailure: function (err) {
+                    setLocalError(err.message);
+                },
+            });
         } else {
             try {
-                // const formData = new FormData();
-                // formData.append("email", formState.inputs.email.value);
-                // formData.append("username", formState.inputs.username.value);
-                // formData.append("password", formState.inputs.password.value);
-                // formData.append("image", formState.inputs.image.value);
-
-                // // the commented out part below works for the express api but not for the lambda
-                // // need to figure out why
-                // const responseData = await sendRequest(
-                //     `${process.env.REACT_APP_BACKEND_URL}/users/signup`,
-                //     // "POST",
-                //     // formData
-                //     "POST",
-                //     JSON.stringify({
-                //         email: formState.inputs.email.value,
-                //         username: formState.inputs.username.value,
-                //         password: formState.inputs.password.value,
-                //         // image: formState.inputs.image.value,
-                //     }),
-                //     {
-                //         "Content-Type": "application/json",
-                //     }
-                // );
-
                 //let cognitoUser;
                 UserPool.signUp(
                     formState.inputs.username.value,

@@ -28,12 +28,10 @@ const SignupConfirm = (props) => {
 
     console.log(cognitoData);
 
-    var userData = {
+    const cognitoUser = new CognitoUser({
         Username: cognitoData.user.username,
         Pool: UserPool,
-    };
-
-    var cognitoUser = new CognitoUser(userData);
+    });
 
     const authSubmitHandler = async (event) => {
         event.preventDefault();
@@ -43,7 +41,7 @@ const SignupConfirm = (props) => {
         cognitoUser.confirmRegistration(
             verificationCode,
             true,
-            function (err, result) {
+            (err, result) => {
                 if (err) {
                     setError(err.message);
                     return;
