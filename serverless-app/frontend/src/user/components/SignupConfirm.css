@@ -1,3 +1,8 @@
 .resend-verification-code-btn {
-    color: rgb(71, 71, 219)
+    color: rgb(71, 71, 219);
+    cursor: pointer;
+}
+
+.resend-verification-code-message {
+    color: red;
 }

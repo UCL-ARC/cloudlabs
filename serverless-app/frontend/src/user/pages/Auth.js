@@ -25,6 +25,10 @@ const Auth = () => {
     const [showSignupConfirm, setShowSignupConfirm] = useState(false);
     const [cognitoData, setCognitoData] = useState(null);
     const { isLoading, error, sendRequest, clearError } = useHttpClient();
+    const [localError, setLocalError] = useState(null);
+    const [signupWasSuccessful, setSignupWasSuccessful] = useState(null);
+
+    console.log(cognitoData);
 
     const [formState, inputHandler, setFormData] = useForm(
         {
@@ -120,7 +124,9 @@ const Auth = () => {
                     null,
                     (err, result) => {
                         if (err) {
-                            console.log(err);
+                            console.log(err.message);
+                            setLocalError(err.message);
+                            return;
                         }
 
                         // console.log(result);
@@ -136,16 +142,32 @@ const Auth = () => {
     };
 
     if (showSignupConfirm) {
-        return <SignupConfirm cognitoData={cognitoData} />;
+        return (
+            <SignupConfirm
+                cognitoData={cognitoData}
+                setShowSignupConfirm={setShowSignupConfirm}
+                setSignupWasSuccessful={setSignupWasSuccessful}
+                setIsLoginMode={setIsLoginMode}
+            />
+        );
     }
 
     return (
         <>
-            <ErrorModal error={error} onClear={clearError} />
+            <ErrorModal
+                error={localError}
+                onClear={() => setLocalError(null)}
+            />
 
             <Card className="authentication">
                 {isLoading && <LoadingSpinner asOverlay />}
                 <h2>Login Required</h2>
+
+                {signupWasSuccessful && (
+                    <h3 className="signup-successful-message">
+                        Signup was successful, you can now login.
+                    </h3>
+                )}
 
                 <hr />
 

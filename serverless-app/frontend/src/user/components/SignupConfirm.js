@@ -1,4 +1,4 @@
-import React, { useState, useContext, useRef } from "react";
+import React, { useState, useRef } from "react";
 import {
     CognitoUserPool,
     CognitoUserAttribute,
@@ -9,9 +9,6 @@ import Card from "../../shared/components/UIElements/Card";
 import Button from "../../shared/components/FormElements/Button";
 import ErrorModal from "../../shared/components/UIElements/ErrorModal";
 import LoadingSpinner from "../../shared/components/UIElements/LoadingSpinner";
-
-import { AuthContext } from "../../shared/context/auth-context";
-
 import UserPool from "../../shared/util/UserPool";
 
 import "./SignupConfirm.css";
@@ -19,10 +16,15 @@ import "./SignupConfirm.css";
 const SignupConfirm = (props) => {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState();
-    const auth = useContext(AuthContext);
+    const [resendCodeMessage, setResendCodeMessage] = useState("");
     const verificationTextInputRef = useRef();
 
-    const { cognitoData } = props;
+    const {
+        cognitoData,
+        setShowSignupConfirm,
+        setSignupWasSuccessful,
+        setIsLoginMode,
+    } = props;
 
     console.log(cognitoData);
 
@@ -36,20 +38,24 @@ const SignupConfirm = (props) => {
     const authSubmitHandler = async (event) => {
         event.preventDefault();
 
+        const verificationCode = verificationTextInputRef.current.value.trim();
+
         cognitoUser.confirmRegistration(
-            verificationTextInputRef.current.value,
+            verificationCode,
             true,
             function (err, result) {
                 if (err) {
-                    console.log(err);
-                    setError(err);
+                    setError(err.message);
                     return;
                 }
                 console.log("call result: " + result);
 
-                if (result !== "SUCCESS") {
+                if (result !== "SUCCESS")
                     setError("Could not confirm user. Please try again later");
-                }
+
+                setIsLoginMode(true);
+                setSignupWasSuccessful(true);
+                setShowSignupConfirm(false);
             }
         );
     };
@@ -57,10 +63,11 @@ const SignupConfirm = (props) => {
     const resendVerificationCode = () => {
         cognitoUser.resendConfirmationCode(function (err, result) {
             if (err) {
-                alert(err.message || JSON.stringify(err));
+                setError(err.message);
                 return;
             }
-            console.log("call result: " + result);
+            console.log(result);
+            setResendCodeMessage(result);
         });
     };
 
@@ -70,7 +77,7 @@ const SignupConfirm = (props) => {
 
             <Card className="authentication">
                 {isLoading && <LoadingSpinner asOverlay />}
-                <h2>Confirm Verification Code</h2>
+                <h2>Confirm Signup Code</h2>
                 <p>
                     We have sent a code by email to{" "}
                     {cognitoData.codeDeliveryDetails.Destination}. <br></br>
@@ -106,6 +113,14 @@ const SignupConfirm = (props) => {
                         Resend it
                     </span>
                 </p>
+
+                {resendCodeMessage && (
+                    <p className="resend-verification-code-message">
+                        Email resent to{" "}
+                        {resendCodeMessage.CodeDeliveryDetails.Destination} {""}
+                        Please check your email for a new code
+                    </p>
+                )}
             </Card>
         </>
     );
