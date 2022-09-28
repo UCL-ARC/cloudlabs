@@ -14,7 +14,7 @@ const UserMedia = () => {
 
     const username = useParams().username;
 
-    console.log(auth);
+    //console.log(auth);
 
     useEffect(() => {
         const fetchMedia = async () => {
