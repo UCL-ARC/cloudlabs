@@ -100,6 +100,9 @@ dist
 # DynamoDB Local files
 .dynamodb/
 
+# local CSV files
+*.csv
+
 # Local .terraform directories
 **/.terraform/*
 
