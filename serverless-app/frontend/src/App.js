@@ -27,33 +27,46 @@ import UserPool from "./shared/util/UserPool";
 function App() {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState();
-    const { token, login, logout, userId, username } = useAuth();
+    const {
+        userId,
+        username,
+        userEmail,
+        idToken,
+        idTokenExpiration,
+        accessToken,
+        accessTokenExpiration,
+        refreshToken,
+        login,
+        logout,
+    } = useAuth();
 
-    useEffect(() => {
-        const autoLogin = async () => {
-            // setError(null);
-            // setIsLoading(true);
+    // useEffect(() => {
+    //     const autoLogin = async () => {
+    //         var user = UserPool.getCurrentUser();
 
-            const cognitoUser = UserPool.getCurrentUser();
-
-            console.log(cognitoUser);
-
-            if (cognitoUser != null) {
-                cognitoUser.getSession(function (err, session) {
-                    if (err) {
-                        alert(err.message || JSON.stringify(err));
-                        return;
-                    }
-                    console.log(session);
-                    console.log("session validity: " + session.isValid());
-                });
-            }
-        };
-        autoLogin();
-    }, []);
+    //         user.getSession(function (err, session) {
+    //             console.log(session);
+    //             user.getUserAttributes(function (err, result) {
+    //                 if (err) {
+    //                     alert(err.message || JSON.stringify(err));
+    //                     return;
+    //                 }
+    //                 for (let i = 0; i < result.length; i++) {
+    //                     console.log(
+    //                         "attribute " +
+    //                             result[i].getName() +
+    //                             " has value " +
+    //                             result[i].getValue()
+    //                     );
+    //                 }
+    //             });
+    //         });
+    //     };
+    //     autoLogin();
+    // }, []);
 
     let routes;
-    if (token) {
+    if (idToken) {
         routes = (
             <Routes>
                 <Route path="/auth" element={<Navigate replace to="/" />} />
@@ -95,10 +108,15 @@ function App() {
     return (
         <AuthContext.Provider
             value={{
-                isLoggedIn: !!token,
-                token: token,
+                isLoggedIn: !!accessToken,
                 userId: userId,
                 username: username,
+                userEmail: userEmail,
+                idToken: idToken,
+                idTokenExpiration: idTokenExpiration,
+                accessToken: accessToken,
+                accessTokenExpiration: accessTokenExpiration,
+                refreshToken: refreshToken,
                 login: login,
                 logout: logout,
             }}

@@ -8,18 +8,32 @@ import "./Home.css";
 const Home = () => {
     const auth = useContext(AuthContext);
 
-    var cognitoUser = UserPool.getCurrentUser();
-    console.log(cognitoUser);
+    console.log(auth);
 
-    if (cognitoUser != null) {
-        cognitoUser.getUserData(function (err, userData) {
-            if (err) {
-                alert(err.message || JSON.stringify(err));
-                return;
-            }
-            console.log("User data for user " + userData);
-        });
-    }
+    // var cognitoUser = UserPool.getCurrentUser();
+    // console.log(cognitoUser);
+
+    // if (cognitoUser != null) {
+    //     cognitoUser.getUserData(function (err, userData) {
+    //         if (err) {
+    //             console.log(err.message);
+    //             alert(err.message || JSON.stringify(err));
+    //             return;
+    //         }
+    //         console.log("User data for user " + userData);
+    //     });
+    // }
+
+    // if (cognitoUser != null) {
+    //     cognitoUser.getSession(function (err, session) {
+    //         if (err) {
+    //             alert(err.message || JSON.stringify(err));
+    //             return;
+    //         }
+    //         console.log(session);
+    //         console.log("session validity: " + session.isValid());
+    //     });
+    // }
 
     return (
         <main className="homepage-container">

@@ -73,72 +73,115 @@ const Auth = () => {
         setIsLoginMode((prevMode) => !prevMode);
     };
 
+    const loginHandler = () => {
+        const authenticationDetails = new AuthenticationDetails({
+            Username: formState.inputs.username.value,
+            Password: formState.inputs.password.value,
+        });
+
+        const cognitoUser = new CognitoUser({
+            Username: formState.inputs.username.value,
+            Pool: UserPool,
+        });
+
+        cognitoUser.authenticateUser(authenticationDetails, {
+            onSuccess: function (result) {
+                const idToken = result.getIdToken().getJwtToken();
+                const idTokenExpiration = result.getIdToken().getExpiration();
+
+                const accessToken = result.getAccessToken().getJwtToken();
+                const accessTokenExpiration = result
+                    .getIdToken()
+                    .getExpiration();
+
+                const refreshToken = result.getRefreshToken().getToken();
+
+                const userId = result.getIdToken().decodePayload()["sub"];
+                const username = result.getIdToken().decodePayload()[
+                    "cognito:username"
+                ];
+                const userEmail = result.getIdToken().decodePayload().email;
+
+                console.log(result);
+                console.log(userId);
+                // console.log(refreshToken);
+                // console.log(accessToken);
+                // console.log(
+                //     result.getIdToken().decodePayload()["cognito:username"]
+                // );
+
+                // cognitoUser.getUserData(function (err, userData) {
+                //     if (err) {
+                //         console.log(err.message);
+                //         alert(err.message || JSON.stringify(err));
+                //         return;
+                //     }
+                //     console.log(userData);
+                // });
+
+                // cognitoUser.getSession(function (err, session) {
+                //     if (err) {
+                //         alert(err.message || JSON.stringify(err));
+                //         return;
+                //     }
+                //     console.log(session);
+                //     console.log("session validity: " + session.isValid());
+                // });
+
+                console.log(cognitoUser);
+
+                // need to look into best practices for auth flows and the refresh token
+                auth.login(
+                    userId,
+                    username,
+                    userEmail,
+                    idToken,
+                    idTokenExpiration,
+                    accessToken,
+                    accessTokenExpiration
+                    //refreshToken
+                );
+
+                //navigate("/");
+            },
+
+            onFailure: function (err) {
+                setLocalError(err.message);
+            },
+        });
+    };
+
+    const signupHandler = () => {
+        //let cognitoUser;
+        UserPool.signUp(
+            formState.inputs.username.value,
+            formState.inputs.password.value,
+            [{ Name: "email", Value: formState.inputs.email.value }],
+            null,
+            (err, result) => {
+                if (err) {
+                    console.log(err.message);
+                    setLocalError(err.message);
+                    return;
+                }
+
+                // console.log(result);
+                // cognitoUser = result.user;
+                // console.log("username is " + cognitoUser.getUsername());
+
+                setCognitoData(result);
+                setShowSignupConfirm(true);
+            }
+        );
+    };
+
     const authSubmitHandler = async (event) => {
         event.preventDefault();
 
         if (isLoginMode) {
-            const authenticationDetails = new AuthenticationDetails({
-                Username: formState.inputs.username.value,
-                Password: formState.inputs.password.value,
-            });
-
-            const cognitoUser = new CognitoUser({
-                Username: formState.inputs.username.value,
-                Pool: UserPool,
-            });
-
-            cognitoUser.authenticateUser(authenticationDetails, {
-                onSuccess: function (result) {
-                    const accessToken = result.getAccessToken().getJwtToken();
-                    const username = result.getIdToken().decodePayload()[
-                        "cognito:username"
-                    ];
-                    const email = result.getIdToken().decodePayload().email;
-
-                    console.log(result);
-                    console.log(accessToken);
-                    console.log(
-                        result.getIdToken().decodePayload()["cognito:username"]
-                    );
-
-                    // need to look into best practices for auth flows and the refresh token
-                    auth.login(
-                        email,
-                        accessToken, // should this be the id token, or maybe I should store both?
-                        username
-                    );
-
-                    navigate("/");
-                },
-
-                onFailure: function (err) {
-                    setLocalError(err.message);
-                },
-            });
+            loginHandler();
         } else {
-            try {
-                //let cognitoUser;
-                UserPool.signUp(
-                    formState.inputs.username.value,
-                    formState.inputs.password.value,
-                    [{ Name: "email", Value: formState.inputs.email.value }],
-                    null,
-                    (err, result) => {
-                        if (err) {
-                            console.log(err.message);
-                            setLocalError(err.message);
-                            return;
-                        }
-
-                        // console.log(result);
-                        // cognitoUser = result.user;
-                        // console.log("username is " + cognitoUser.getUsername());
-
-                        setCognitoData(result);
-                        setShowSignupConfirm(true);
-                    }
-                );
-            } catch (err) {}
+            signupHandler();
         }
     };
 
