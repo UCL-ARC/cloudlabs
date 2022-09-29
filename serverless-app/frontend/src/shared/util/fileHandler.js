@@ -20,7 +20,6 @@ export const handleUpload = async (file) => {
 
     let uploadedFile;
     try {
-        console.log("uploading file to S3");
         uploadedFile = await ReactS3Client.uploadFile(file, newFileName);
     } catch (err) {
         console.log(err);
@@ -44,8 +43,6 @@ const formatFileName = (file) => {
     const randomString = uuidv4();
 
     const newFileName = `${cleanFileName}-${date}-${randomString}`;
-
-    console.log(newFileName);
 
     // maximum of 60 characters
     return newFileName.substring(0, 60);

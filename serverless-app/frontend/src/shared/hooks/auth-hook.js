@@ -1,6 +1,9 @@
 import { useState, useCallback, useEffect } from "react";
 
+import UserPool from "../util/UserPool";
+
 let logoutTimer;
+const timeToAutoLogout = 1000 * 60 * 60 * 24 * 7; // 7 days (in milliseconds)
 
 export const useAuth = () => {
     const [token, setToken] = useState(false);
@@ -12,8 +15,10 @@ export const useAuth = () => {
         setToken(token);
         setUserId(uid);
         setUsername(username);
+
         const tokenExpirationDate =
-            expirationDate || new Date(new Date().getTime() + 1000 * 60 * 60);
+            expirationDate || new Date(new Date().getTime() + timeToAutoLogout);
+
         setTokenExpirationDate(tokenExpirationDate);
         localStorage.setItem(
             "userData",
@@ -27,10 +32,15 @@ export const useAuth = () => {
     }, []);
 
     const logout = useCallback(() => {
+        const cognitoUser = UserPool.getCurrentUser();
+        cognitoUser.signOut();
+
         setToken(null);
         setTokenExpirationDate(null);
         setUserId(null);
         localStorage.removeItem("userData");
+
+        window.location.replace("/");
     }, []);
 
     useEffect(() => {

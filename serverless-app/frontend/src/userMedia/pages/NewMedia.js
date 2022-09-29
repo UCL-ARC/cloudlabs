@@ -5,7 +5,7 @@ import Input from "../../shared/components/FormElements/Input";
 import Button from "../../shared/components/FormElements/Button";
 import ErrorModal from "../../shared/components/UIElements/ErrorModal";
 import LoadingSpinner from "../../shared/components/UIElements/LoadingSpinner";
-import MediaUpload from "../../shared/components/FormElements/MediaUpload";
+import FileUpload from "../../shared/components/FormElements/FileUpload";
 import {
     VALIDATOR_REQUIRE,
     VALIDATOR_MINLENGTH,
@@ -44,8 +44,6 @@ const NewMedia = () => {
     const mediaSubmitHandler = async (event) => {
         event.preventDefault();
 
-        console.log(formState.inputs.file.value);
-
         // upload the file to S3
         let uploadedFile;
         try {
@@ -54,11 +52,7 @@ const NewMedia = () => {
             console.log(err);
         }
 
-        console.log(uploadedFile);
-        console.log("after upload");
-
         try {
-            console.log("before database");
             // const formData = new FormData();
             // formData.append("title", formState.inputs.title.value);
             // formData.append("description", formState.inputs.description.value);
@@ -82,7 +76,7 @@ const NewMedia = () => {
                     Authorization: "Bearer " + auth.token,
                 }
             );
-            console.log("after database");
+
             navigate("/");
         } catch (err) {
             console.log(err);
@@ -115,7 +109,7 @@ const NewMedia = () => {
                     onInput={inputHandler}
                 />
 
-                <MediaUpload
+                <FileUpload
                     id="file"
                     onInput={inputHandler}
                     errorText="Please provide an image or video."

@@ -47,13 +47,6 @@ exports.handler = async (event, context) => {
         return response;
     }
 
-    // remove these bits if not needed
-    //userMediaItem = userMedia.Items[0];
-
-    // update the found media item with the new title and description
-    // userMediaItem.MediaTitle = title;
-    // userMediaItem.MediaDescription = description;
-
     const params = {
         TableName: tableName,
         Key: {
