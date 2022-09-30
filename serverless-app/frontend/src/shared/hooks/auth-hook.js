@@ -19,26 +19,6 @@ export const useAuth = () => {
 
     const [refreshToken, setRefreshToken] = useState(false);
 
-    // const login = useCallback((uid, token, username, expirationDate) => {
-    //     setToken(token);
-    //     setUserId(uid);
-    //     setUsername(username);
-
-    //     const tokenExpirationDate =
-    //         expirationDate || new Date(new Date().getTime() + timeToAutoLogout);
-
-    //     setTokenExpirationDate(tokenExpirationDate);
-    //     localStorage.setItem(
-    //         "userData",
-    //         JSON.stringify({
-    //             userId: uid,
-    //             token: token,
-    //             username: username,
-    //             expiration: tokenExpirationDate.toISOString(),
-    //         })
-    //     );
-    // }, []);
-
     const login = useCallback(
         (
             userId,
@@ -47,8 +27,7 @@ export const useAuth = () => {
             idToken,
             idTokenExpiration,
             accessToken,
-            accessTokenExpiration,
-            refreshToken
+            accessTokenExpiration
         ) => {
             setUserId(userId);
             setUsername(username);
@@ -57,37 +36,22 @@ export const useAuth = () => {
             setIdTokenExpiration(idTokenExpiration);
             setAccessToken(accessToken);
             setAccessTokenExpiration(accessTokenExpiration);
-            //setRefreshToken(refreshToken);
-
-            console.log("kk");
-            console.log(username);
-            console.log(new Date(accessTokenExpiration * 1000));
-            console.log(new Date(accessTokenExpiration * 1000).getTime());
-            console.log(new Date());
-            console.log(new Date().getTime());
 
             console.log(
                 new Date(accessTokenExpiration * 1000).getTime() -
                     new Date().getTime()
             );
 
-            // const tokenExpirationDate =
-            //     accessTokenExpiration ||
-            //     new Date(new Date().getTime() + timeToAutoLogout);
-
-            // setTokenExpirationDate(tokenExpirationDate);
-
-            console.log("setting local storage");
             localStorage.setItem(
                 "userData",
                 JSON.stringify({
                     userId: userId,
                     username: username,
                     userEmail: userEmail,
-                    idToken: idToken,
-                    idTokenExpiration: idTokenExpiration,
-                    accessToken: accessToken,
-                    accessTokenExpiration: accessTokenExpiration,
+                    // idToken: idToken,
+                    // idTokenExpiration: idTokenExpiration,
+                    // accessToken: accessToken,
+                    // accessTokenExpiration: accessTokenExpiration,
                 })
             );
         },
@@ -107,26 +71,24 @@ export const useAuth = () => {
         setAccessTokenExpiration(null);
         setRefreshToken(null);
 
-        //setTokenExpirationDate(null);
         localStorage.removeItem("userData");
+        clearTimeout(logoutTimer);
 
         window.location.replace("/");
     }, []);
 
     const refreshAuth = () => {
-        // refresh the token or logout if the token is invalid
+        // AWS methods get the current user and auth tokens
+        // If the auth token has expired, then getSession() will use the refresh token automatically to get new tokens and start a new session
+        const user = UserPool.getCurrentUser();
 
-        // this is where we need to handle the refresh token
-        // get the refresh token associated with the currently logged in user
-        // exchange the refresh token for new credentials
-        // log in the user with these new credentials
-
-        console.log("refresh auth");
-
-        var user = UserPool.getCurrentUser();
-
-        user.getSession(function (err, session) {
-            console.log(session);
+        user?.getSession(function (err, session) {
+            if (err) {
+                alert(
+                    "Error getting the user session. Please inform your administrator of this issue."
+                );
+                return;
+            }
 
             const userId = session.getIdToken().decodePayload()["sub"];
             const username = session.getIdToken().decodePayload()[
@@ -138,12 +100,9 @@ export const useAuth = () => {
             const idTokenExpiration = session.getIdToken().getExpiration();
 
             const accessToken = session.getAccessToken().getJwtToken();
-            const accessTokenExpiration = session.getIdToken().getExpiration();
-
-            const refreshToken = session.getRefreshToken().getToken();
-
-            console.log(accessToken);
-            console.log(accessTokenExpiration);
+            const accessTokenExpiration = session
+                .getAccessToken()
+                .getExpiration();
 
             login(
                 userId,
@@ -153,59 +112,24 @@ export const useAuth = () => {
                 idTokenExpiration,
                 accessToken,
                 accessTokenExpiration
-                //refreshToken
             );
-
-            // log the user out if a problem occurs in this function
         });
     };
 
-    const remainingTime =
-        new Date(accessTokenExpiration * 1000).getTime() - new Date().getTime();
-
     useEffect(() => {
-        console.log("nn");
-        console.log(accessToken);
-        console.log(accessTokenExpiration);
         if (accessToken && accessTokenExpiration) {
             const remainingTime =
                 new Date(accessTokenExpiration * 1000).getTime() -
                 new Date().getTime();
 
-            console.log(remainingTime);
-
             logoutTimer = setTimeout(refreshAuth, remainingTime);
         } else {
-            console.log("clear");
             clearTimeout(logoutTimer);
         }
     }, [accessToken, accessTokenExpiration, logout]);
 
     useEffect(() => {
-        const storedData = JSON.parse(localStorage.getItem("userData"));
-        console.log("check auth");
-        console.log(storedData);
-
-        // check local storage items exist and that the expiry date is in the future
-        if (
-            storedData &&
-            storedData.userId &&
-            storedData.username &&
-            storedData.userEmail &&
-            storedData.idToken &&
-            storedData.accessToken &&
-            new Date(storedData.accessTokenExpiration * 1000) > new Date() // multiply the date by 1000 to convert the unix timestamp to milliseconds
-        ) {
-            console.log("ll");
-
-            // multiply the date by 1000 to convert the unix timestamp to milliseconds
-            console.log(new Date(storedData.accessTokenExpiration * 1000));
-            console.log(
-                new Date(storedData.accessTokenExpiration * 1000) > new Date()
-            );
-
-            refreshAuth();
-        }
+        refreshAuth();
     }, [login]);
 
     return {

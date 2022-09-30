@@ -1,11 +1,5 @@
 import React, { useState, useContext } from "react";
-import {
-    CognitoUserPool,
-    CognitoUserAttribute,
-    CognitoUser,
-    AuthenticationDetails,
-} from "amazon-cognito-identity-js";
-import { useNavigate } from "react-router-dom";
+import { CognitoUser, AuthenticationDetails } from "amazon-cognito-identity-js";
 
 import Card from "../../shared/components/UIElements/Card";
 import Input from "../../shared/components/FormElements/Input";
@@ -34,9 +28,6 @@ const Auth = () => {
     const { isLoading, error, sendRequest, clearError } = useHttpClient();
     const [localError, setLocalError] = useState(null);
     const [signupWasSuccessful, setSignupWasSuccessful] = useState(null);
-    const navigate = useNavigate();
-
-    console.log(cognitoData);
 
     const [formState, inputHandler, setFormData] = useForm(
         {
@@ -91,10 +82,9 @@ const Auth = () => {
 
                 const accessToken = result.getAccessToken().getJwtToken();
                 const accessTokenExpiration = result
-                    .getIdToken()
+                    .getAccessToken()
                     .getExpiration();
-
-                const refreshToken = result.getRefreshToken().getToken();
+                console.log(accessTokenExpiration);
 
                 const userId = result.getIdToken().decodePayload()["sub"];
                 const username = result.getIdToken().decodePayload()[
@@ -102,35 +92,6 @@ const Auth = () => {
                 ];
                 const userEmail = result.getIdToken().decodePayload().email;
 
-                console.log(result);
-                console.log(userId);
-                // console.log(refreshToken);
-                // console.log(accessToken);
-                // console.log(
-                //     result.getIdToken().decodePayload()["cognito:username"]
-                // );
-
-                // cognitoUser.getUserData(function (err, userData) {
-                //     if (err) {
-                //         console.log(err.message);
-                //         alert(err.message || JSON.stringify(err));
-                //         return;
-                //     }
-                //     console.log(userData);
-                // });
-
-                // cognitoUser.getSession(function (err, session) {
-                //     if (err) {
-                //         alert(err.message || JSON.stringify(err));
-                //         return;
-                //     }
-                //     console.log(session);
-                //     console.log("session validity: " + session.isValid());
-                // });
-
-                console.log(cognitoUser);
-
-                // need to look into best practices for auth flows and the refresh token
                 auth.login(
                     userId,
                     username,
@@ -139,10 +100,7 @@ const Auth = () => {
                     idTokenExpiration,
                     accessToken,
                     accessTokenExpiration
-                    //refreshToken
                 );
-
-                //navigate("/");
             },
 
             onFailure: function (err) {
@@ -152,7 +110,6 @@ const Auth = () => {
     };
 
     const signupHandler = () => {
-        //let cognitoUser;
         UserPool.signUp(
             formState.inputs.username.value,
             formState.inputs.password.value,
@@ -164,10 +121,6 @@ const Auth = () => {
                     setLocalError(err.message);
                     return;
                 }
-
-                // console.log(result);
-                // cognitoUser = result.user;
-                // console.log("username is " + cognitoUser.getUsername());
 
                 setCognitoData(result);
                 setShowSignupConfirm(true);

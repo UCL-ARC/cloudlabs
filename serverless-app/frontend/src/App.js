@@ -40,31 +40,6 @@ function App() {
         logout,
     } = useAuth();
 
-    // useEffect(() => {
-    //     const autoLogin = async () => {
-    //         var user = UserPool.getCurrentUser();
-
-    //         user.getSession(function (err, session) {
-    //             console.log(session);
-    //             user.getUserAttributes(function (err, result) {
-    //                 if (err) {
-    //                     alert(err.message || JSON.stringify(err));
-    //                     return;
-    //                 }
-    //                 for (let i = 0; i < result.length; i++) {
-    //                     console.log(
-    //                         "attribute " +
-    //                             result[i].getName() +
-    //                             " has value " +
-    //                             result[i].getValue()
-    //                     );
-    //                 }
-    //             });
-    //         });
-    //     };
-    //     autoLogin();
-    // }, []);
-
     let routes;
     if (idToken) {
         routes = (
@@ -90,8 +65,6 @@ function App() {
     } else {
         routes = (
             <Routes>
-                {/* <Route path="/auth" element={<Navigate replace to="/" />} /> */}
-
                 <Route path="/" element={<Home />} />
 
                 {/* <Route path="/users" element={<Users />} /> */}
