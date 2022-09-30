@@ -22,7 +22,8 @@ const deleteMediaItem = async (username, mediaItemId) => {
 };
 
 exports.handler = async (event, context) => {
-    const username = event.requestContext.authorizer.lambda.username;
+    // const username = event.requestContext.authorizer.lambda.username;
+    const username = event.pathParameters.username;
     const mediaItemId = event.pathParameters.mediaItemId;
 
     // todo: find the place first and then compare the media item creator username to the current username

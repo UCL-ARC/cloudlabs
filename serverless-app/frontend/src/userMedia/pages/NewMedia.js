@@ -61,7 +61,7 @@ const NewMedia = () => {
             // formData.append("s3Filename", uploadedFile.key);
 
             await sendRequest(
-                `${process.env.REACT_APP_BACKEND_URL}/media`,
+                `${process.env.REACT_APP_BACKEND_URL}/media/${auth.username}/new`,
                 "POST",
                 //formData,
                 JSON.stringify({
@@ -73,7 +73,7 @@ const NewMedia = () => {
                     s3Filename: uploadedFile.key,
                 }),
                 {
-                    Authorization: "Bearer " + auth.token,
+                    Authorization: "Bearer " + auth.accessToken,
                 }
             );
 

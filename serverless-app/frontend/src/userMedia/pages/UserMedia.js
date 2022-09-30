@@ -29,6 +29,8 @@ const UserMedia = () => {
                     }
                 );
 
+                console.log(responseData);
+
                 setLoadedMedia(responseData.Items);
             } catch (err) {}
         };

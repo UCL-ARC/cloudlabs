@@ -47,11 +47,11 @@ const MediaItem = (props) => {
             }
 
             await sendRequest(
-                `${process.env.REACT_APP_BACKEND_URL}/media/${mediaId}`,
+                `${process.env.REACT_APP_BACKEND_URL}/media/${auth.username}/${mediaId}`,
                 "DELETE",
                 null,
                 {
-                    Authorization: "Bearer " + auth.token,
+                    Authorization: "Bearer " + auth.accessToken,
                 }
             );
             onDelete(mediaId);
@@ -97,7 +97,7 @@ const MediaItem = (props) => {
                         )}
 
                         {fileType.includes("video") && (
-                            <video controls controlslist="nodownload">
+                            <video controls controlsList="nodownload">
                                 <source src={fileLocation} />
                             </video>
                         )}
