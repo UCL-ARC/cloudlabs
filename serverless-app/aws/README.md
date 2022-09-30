@@ -7,7 +7,7 @@ Lambda functions are run when users hit the appropriate api endpoints stored in 
 For now, these lambda functions are uploaded to AWS manually but this will eventually be automated with Terraform.
 
 -   First, zip all the files belonging to each individual lambda function into separate archives.
--   For example, select all of the files in `/lambda-functions/auth` and zip them using a zipping utility. Make sure to include the node_modules folder in the zip archive if it exists.
+-   For example, select all of the files in `/lambda-functions/createMediaItem` and zip them using a zipping utility. Make sure to include the node_modules folder in the zip archive if one exists (not all of them will need a node_modules folder).
 -   Go to the lambda section in your AWS accound.
 -   Create a new function, and choose the option to upload a .zip archive.
 
