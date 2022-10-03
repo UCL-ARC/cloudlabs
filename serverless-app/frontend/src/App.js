@@ -74,7 +74,6 @@ function App() {
                 idTokenExpiration: idTokenExpiration,
                 accessToken: accessToken,
                 accessTokenExpiration: accessTokenExpiration,
-                refreshToken: refreshToken,
                 login: login,
                 logout: logout,
             }}

@@ -1,7 +1,6 @@
 import React, { useContext } from "react";
 
 import { AuthContext } from "../shared/context/auth-context";
-import UserPool from "../shared/util/UserPool";
 
 import "./Home.css";
 
