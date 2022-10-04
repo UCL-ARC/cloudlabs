@@ -1,25 +1,13 @@
 import React, { useContext } from "react";
 
 import { AuthContext } from "../shared/context/auth-context";
-import UserPool from "../shared/util/UserPool";
 
 import "./Home.css";
 
 const Home = () => {
     const auth = useContext(AuthContext);
 
-    var cognitoUser = UserPool.getCurrentUser();
-    console.log(cognitoUser);
-
-    if (cognitoUser != null) {
-        cognitoUser.getUserData(function (err, userData) {
-            if (err) {
-                alert(err.message || JSON.stringify(err));
-                return;
-            }
-            console.log("User data for user " + userData);
-        });
-    }
+    console.log(auth);
 
     return (
         <main className="homepage-container">

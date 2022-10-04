@@ -1,9 +1,5 @@
 import React, { useState, useRef } from "react";
-import {
-    CognitoUserPool,
-    CognitoUserAttribute,
-    CognitoUser,
-} from "amazon-cognito-identity-js";
+import { CognitoUser } from "amazon-cognito-identity-js";
 
 import Card from "../../shared/components/UIElements/Card";
 import Button from "../../shared/components/FormElements/Button";
@@ -25,8 +21,6 @@ const SignupConfirm = (props) => {
         setSignupWasSuccessful,
         setIsLoginMode,
     } = props;
-
-    console.log(cognitoData);
 
     const cognitoUser = new CognitoUser({
         Username: cognitoData.user.username,

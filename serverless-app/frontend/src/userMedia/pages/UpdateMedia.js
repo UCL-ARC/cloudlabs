@@ -51,7 +51,7 @@ const UpdateMedia = () => {
                     "GET",
                     null,
                     {
-                        Authorization: "Bearer " + auth.token,
+                        Authorization: "Bearer " + auth.accessToken,
                     }
                 );
 
@@ -78,7 +78,7 @@ const UpdateMedia = () => {
         event.preventDefault();
         try {
             await sendRequest(
-                `${process.env.REACT_APP_BACKEND_URL}/media/${mediaId}`,
+                `${process.env.REACT_APP_BACKEND_URL}/media/${username}/${mediaId}`,
                 "PATCH",
                 JSON.stringify({
                     title: formState.inputs.title.value,
@@ -86,7 +86,7 @@ const UpdateMedia = () => {
                 }),
                 {
                     "Content-Type": "application/json",
-                    Authorization: "Bearer " + auth.token,
+                    Authorization: "Bearer " + auth.accessToken,
                 }
             );
 

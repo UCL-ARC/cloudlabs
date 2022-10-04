@@ -14,7 +14,7 @@ const UserMedia = () => {
 
     const username = useParams().username;
 
-    //console.log(auth);
+    console.log(auth);
 
     useEffect(() => {
         const fetchMedia = async () => {
@@ -25,9 +25,11 @@ const UserMedia = () => {
                     "GET",
                     null,
                     {
-                        Authorization: "Bearer " + auth.token,
+                        Authorization: "Bearer " + auth.accessToken,
                     }
                 );
+
+                console.log(responseData);
 
                 setLoadedMedia(responseData.Items);
             } catch (err) {}
