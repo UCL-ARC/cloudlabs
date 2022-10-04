@@ -22,12 +22,12 @@ provider "aws" {
   region  = var.aws_region
 }
 
-/* DYNAMODB 
-This defines the single table in DynamoDB. Note: only the hash_key and the range_key (if used)
-must be declared in this resource. All additional attributes will be automatically declared when
-writing to/reading from the table. 
-If a global/local index is used, this must be declared as well (and the associated attributes with it)
-*/
+### DYNAMODB 
+### This defines the single table in DynamoDB. Note: only the hash_key and the range_key (if used)
+### must be declared in this resource. All additional attributes will be automatically declared when
+### writing to/reading from the table. 
+### If a global/local index is used, this must be declared as well (and the associated attributes with it)
+
 
 resource "aws_dynamodb_table" "user-places-table" {
   name           = "users_and_places"
@@ -50,59 +50,18 @@ resource "aws_dynamodb_table" "user-places-table" {
 
 ### SECTION FOR DECLARING S3 Buckets  
 ### S3 is used to store and run the lambda functions
-###
+### --> see file s3buckets.tf in this directory
 
-### SECTION FOR DECLARING LAMBDA FUNCTIONS
+### SECTION FOR DECLARING LAMBDA FUNCTIONS AND THEIR ROLES
 ### there are 2 lambda functions
 ### a.) the first to handle user authentication
 ### b.) the second to handle API request
 ### ALL API calls and methods (GET,POST, DELETE, PATCH) require authentication 
-
-# Local Lambda Functions to be zipped up and uploaded to the S3 bucket
-# the first is the lambda function authenticating users
+### --> see file lambdas.tf in this directory
 
 
-
-
-# The documentation isn't clear on this. But the IAM role needs 2 policy attachment, one for being able to
-# interact with DynamoDB and another more generic one to do lambda executions
-#define an IAM role for all lambda functions
-# --- as a separate terraform ----
-
-resource "aws_iam_role" "lambda_exec" {
-  name = "serverless_lambda"
-
-  assume_role_policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [{
-      Action = "sts:AssumeRole"
-      Effect = "Allow"
-      Sid    = ""
-      Principal = {
-        Service = "lambda.amazonaws.com"
-      }
-      }
-    ]
-  })
-}
-
-resource "aws_iam_role_policy_attachment" "lambda_dynamodb_policy" {
-  role       = aws_iam_role.lambda_exec.name
-  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaDynamoDBExecutionRole"
-}
-
-resource "aws_iam_role_policy_attachment" "lambda_basic_policy" {
-  role       = aws_iam_role.lambda_exec.name
-  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
-}
-
-### SECTION TO DECLARE API GATEWAY INTEGRATION WITH LAMBDA
-### We use a custom authorizer to authenticate all API calls with the user credential tokens
-### We then define 2 integration points, one for the authentication lambda and one for the user api lambda
-### It all comes together in the API GATEWAY route
-### Note how the 2 different lambdas and the authorizer are being referenced
-
-# AWS Cognito
+### AWS Cognito
+### we define a User pool based on using email as a login mechanism
 resource "aws_cognito_user_pool" "example_ucl_user_pool" {
   name = "example_ucl_user_pool"  
 }
@@ -112,28 +71,32 @@ resource "aws_cognito_user_pool" "example_ucl_user_pool" {
 resource "aws_cognito_user_pool_client" "example_ucl_user_pool_client" {
   name = "example_ucl_user_pool_client"
   user_pool_id = aws_cognito_user_pool.example_ucl_user_pool.id
+  callback_urls = ["https://examples_callback.com"]
   allowed_oauth_flows_user_pool_client = true
-  allowed_oauth_scopes = ["email"]
+  allowed_oauth_scopes = ["email", "openid"]
   allowed_oauth_flows = ["code", "implicit"]
+  supported_identity_providers = ["COGNITO"]
   
 }
 
+### SECTION TO DECLARE API GATEWAY INTEGRATION WITH LAMBDA
+### We use a custom authorizer to authenticate all API calls with the user credential tokens
+### We then define 2 integration points, one for the authentication lambda and one for the user api lambda
+### It all comes together in the API GATEWAY route
+### Note how the 2 different lambdas and the authorizer are being referenced
 
-
-
-# API Gateway
-# Section for the API gateway
-# --- as a separate terraform ----
+### DEFINE THE API GATEWAY (version2)
 resource "aws_apigatewayv2_api" "serverless_gateway" {
   name          = "example_serverless_lambda_gateway"
   description   = "An example API Gateway for serverless backend"
   protocol_type = "HTTP"
 }
 
+### USING COGNITO AS AN API GATEWAY AUTHORISER
 resource "aws_apigatewayv2_authorizer" "example_jwt_authorizer" {
   api_id                            = aws_apigatewayv2_api.serverless_gateway.id
-  identity_sources                  = ["$request.header.Authorization"]
   authorizer_type                   = "JWT"
+  identity_sources                  = ["$request.header.Authorization"]
   name                              = "cognito_authorizer"
   jwt_configuration {
     audience = [aws_cognito_user_pool.example_ucl_user_pool.id]
@@ -141,24 +104,142 @@ resource "aws_apigatewayv2_authorizer" "example_jwt_authorizer" {
   }
 }
 
-#TODO: this needs to be done for every lambda function
-resource "aws_apigatewayv2_integration" "example_serverless_app_lambdas" {
+### PERMITTING API GATEWAY TO USE EACH OF OUR LAMBDA FUNCTIONS
+### WE NEED TO DO THIS FOR EACH DEFINED LAMBDA FUNCTION 
+
+# CreateMedia
+resource "aws_lambda_permission" "api_gateway_createmedia_permission" {
+  statement_id  = "AllowAPIGatewayCreateMediaAPI"
+  function_name = aws_lambda_function.createMediaItem_lambda.function_name
+  action        = "lambda:InvokeFunction"
+  principal     = "apigateway.amazonaws.com"
+}
+
+# DeleteMedia
+resource "aws_lambda_permission" "api_gateway_deletemedia_permission" {
+  statement_id  = "AllowAPIGatewayDeleteMediaAPI"
+  function_name = aws_lambda_function.deleteMediaItemById_lambda.function_name
+  action        = "lambda:InvokeFunction"
+  principal     = "apigateway.amazonaws.com"
+}
+
+# GetMediaForUser
+resource "aws_lambda_permission" "api_gateway_getmediaforuser_permission" {
+  statement_id  = "AllowAPIGatewayGetMediaForUserAPI"
+  function_name = aws_lambda_function.getAllMediaItemsByUserId_lambda.function_name
+  action        = "lambda:InvokeFunction"
+  principal     = "apigateway.amazonaws.com"
+}
+
+# GetMediaByID
+resource "aws_lambda_permission" "api_gateway_getmediabyid_permission" {
+  statement_id  = "AllowAPIGatewayGetMediaByIDAPI"
+  function_name = aws_lambda_function.getMediaItemById_lambda.function_name
+  action        = "lambda:InvokeFunction"
+  principal     = "apigateway.amazonaws.com"
+}
+
+# UpdateMedia
+resource "aws_lambda_permission" "api_gateway_updatemedia_permission" {
+  statement_id  = "AllowAPIGatewayUpdateMediaAPI"
+  function_name = aws_lambda_function.updateMediaItem_lambda.function_name
+  action        = "lambda:InvokeFunction"
+  principal     = "apigateway.amazonaws.com"
+}
+
+
+
+### integration of lambda functions with API gateway
+### NOTE: WHEN USING 'integration_type = "AWS_PROXY" the following must be set 
+### 'integration_method = "POST" ' 
+# Create Media
+resource "aws_apigatewayv2_integration" "int_createmedialambdas" {
   api_id                 = aws_apigatewayv2_api.serverless_gateway.id
   integration_type       = "AWS_PROXY"
   connection_type        = "INTERNET"
   integration_method     = "POST"
   payload_format_version = "2.0"
-  integration_uri        = aws_lambda_function.user_apis_lambda.invoke_arn
+  integration_uri        = aws_lambda_function.createMediaItem_lambda.invoke_arn
 }
 
-#TODO: do we need one for each lambda function/integration?
-resource "aws_apigatewayv2_route" "example_route_authorization" {
+resource "aws_apigatewayv2_route" "createmedia_authorization" {
   api_id             = aws_apigatewayv2_api.serverless_gateway.id
   authorization_type = "JWT"
   authorizer_id      = aws_apigatewayv2_authorizer.example_jwt_authorizer.id
-  route_key          = "ANY /{proxy+}"
-  target             = "integrations/${aws_apigatewayv2_integration.example_serverless_app_lambdas.id}"
+  route_key          = "POST /media"
+  target             = "integrations/${aws_apigatewayv2_integration.int_createmedialambdas.id}"
 }
 
+# Delete Media
+resource "aws_apigatewayv2_integration" "int_deletemedialambdas" {
+  api_id                 = aws_apigatewayv2_api.serverless_gateway.id
+  integration_type       = "AWS_PROXY"
+  connection_type        = "INTERNET"
+  integration_method     = "POST"
+  payload_format_version = "2.0"
+  integration_uri        = aws_lambda_function.deleteMediaItemById_lambda.invoke_arn
+}
+
+resource "aws_apigatewayv2_route" "deletemedia_authorization" {
+  api_id             = aws_apigatewayv2_api.serverless_gateway.id
+  authorization_type = "JWT"
+  authorizer_id      = aws_apigatewayv2_authorizer.example_jwt_authorizer.id
+  route_key          = "DELETE /media/{proxy+}"
+  target             = "integrations/${aws_apigatewayv2_integration.int_deletemedialambdas.id}"
+}
+
+# Get Media for User
+resource "aws_apigatewayv2_integration" "int_getmediabyuserlambdas" {
+  api_id                 = aws_apigatewayv2_api.serverless_gateway.id
+  integration_type       = "AWS_PROXY"
+  connection_type        = "INTERNET"
+  integration_method     = "POST"
+  payload_format_version = "2.0"
+  integration_uri        = aws_lambda_function.getAllMediaItemsByUserId_lambda.invoke_arn
+}
+
+resource "aws_apigatewayv2_route" "getmediabyuser_authorization" {
+  api_id             = aws_apigatewayv2_api.serverless_gateway.id
+  authorization_type = "JWT"
+  authorizer_id      = aws_apigatewayv2_authorizer.example_jwt_authorizer.id
+  route_key          = "GET /media"
+  target             = "integrations/${aws_apigatewayv2_integration.int_getmediabyuserlambdas.id}"
+}
+
+# Get Media by ID
+resource "aws_apigatewayv2_integration" "int_getmediabyidlambdas" {
+  api_id                 = aws_apigatewayv2_api.serverless_gateway.id
+  integration_type       = "AWS_PROXY"
+  connection_type        = "INTERNET"
+  integration_method     = "POST"
+  payload_format_version = "2.0"
+  integration_uri        = aws_lambda_function.getMediaItemById_lambda.invoke_arn
+}
+
+resource "aws_apigatewayv2_route" "getmediabyid_authorization" {
+  api_id             = aws_apigatewayv2_api.serverless_gateway.id
+  authorization_type = "JWT"
+  authorizer_id      = aws_apigatewayv2_authorizer.example_jwt_authorizer.id
+  route_key          = "GET /media/{proxy+}"
+  target             = "integrations/${aws_apigatewayv2_integration.int_getmediabyidlambdas.id}"
+}
+
+# Update Media
+resource "aws_apigatewayv2_integration" "int_updatemedialambdas" {
+  api_id                 = aws_apigatewayv2_api.serverless_gateway.id
+  integration_type       = "AWS_PROXY"
+  connection_type        = "INTERNET"
+  integration_method     = "POST"
+  payload_format_version = "2.0"
+  integration_uri        = aws_lambda_function.updateMediaItem_lambda.invoke_arn
+}
+
+resource "aws_apigatewayv2_route" "updatemedia_authorization" {
+  api_id             = aws_apigatewayv2_api.serverless_gateway.id
+  authorization_type = "JWT"
+  authorizer_id      = aws_apigatewayv2_authorizer.example_jwt_authorizer.id
+  route_key          = "PATCH /media/{proxy+}"
+  target             = "integrations/${aws_apigatewayv2_integration.int_updatemedialambdas.id}"
+}
 
 

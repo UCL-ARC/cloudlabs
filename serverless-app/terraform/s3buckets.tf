@@ -81,7 +81,7 @@ resource "aws_s3_object" "serverless_getall_object" {
 #get media by id
 resource "aws_s3_object" "serverless_getbyid_object" {
   bucket = aws_s3_bucket.lambda_bucket_for_serverless_app.id
-  key    = "getMediaItemById.zip.zip"
+  key    = "getMediaItemById.zip"
   source = data.archive_file.getMediaItemById_data.output_path
   etag   = filemd5(data.archive_file.getMediaItemById_data.output_path)
 }
