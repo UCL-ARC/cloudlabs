@@ -102,6 +102,25 @@ resource "aws_iam_role_policy_attachment" "lambda_basic_policy" {
 ### It all comes together in the API GATEWAY route
 ### Note how the 2 different lambdas and the authorizer are being referenced
 
+# AWS Cognito
+resource "aws_cognito_user_pool" "example_ucl_user_pool" {
+  name = "example_ucl_user_pool"  
+}
+
+#   TODO: check that we have the right setting. 
+# do we need a redirect URL? what is the right choice for allowed_oauth_flows? any other attributes missing?
+resource "aws_cognito_user_pool_client" "example_ucl_user_pool_client" {
+  name = "example_ucl_user_pool_client"
+  user_pool_id = aws_cognito_user_pool.example_ucl_user_pool.id
+  allowed_oauth_flows_user_pool_client = true
+  allowed_oauth_scopes = ["email"]
+  allowed_oauth_flows = ["code", "implicit"]
+  
+}
+
+
+
+
 # API Gateway
 # Section for the API gateway
 # --- as a separate terraform ----
@@ -114,13 +133,15 @@ resource "aws_apigatewayv2_api" "serverless_gateway" {
 resource "aws_apigatewayv2_authorizer" "example_jwt_authorizer" {
   api_id                            = aws_apigatewayv2_api.serverless_gateway.id
   identity_sources                  = ["$request.header.Authorization"]
-  authorizer_type                   = "REQUEST"
-  name                              = "lambda_jwt_authorizer"
-  authorizer_payload_format_version = "2.0"
-  authorizer_uri                    = aws_lambda_function.authorisation_lambda.invoke_arn
-  enable_simple_responses           = true
+  authorizer_type                   = "JWT"
+  name                              = "cognito_authorizer"
+  jwt_configuration {
+    audience = [aws_cognito_user_pool.example_ucl_user_pool.id]
+    issuer = "https://${aws_cognito_user_pool.example_ucl_user_pool.endpoint}"
+  }
 }
 
+#TODO: this needs to be done for every lambda function
 resource "aws_apigatewayv2_integration" "example_serverless_app_lambdas" {
   api_id                 = aws_apigatewayv2_api.serverless_gateway.id
   integration_type       = "AWS_PROXY"
@@ -130,10 +151,10 @@ resource "aws_apigatewayv2_integration" "example_serverless_app_lambdas" {
   integration_uri        = aws_lambda_function.user_apis_lambda.invoke_arn
 }
 
-
+#TODO: do we need one for each lambda function/integration?
 resource "aws_apigatewayv2_route" "example_route_authorization" {
   api_id             = aws_apigatewayv2_api.serverless_gateway.id
-  authorization_type = "CUSTOM"
+  authorization_type = "JWT"
   authorizer_id      = aws_apigatewayv2_authorizer.example_jwt_authorizer.id
   route_key          = "ANY /{proxy+}"
   target             = "integrations/${aws_apigatewayv2_integration.example_serverless_app_lambdas.id}"
