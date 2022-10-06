@@ -71,13 +71,13 @@ resource "aws_cognito_user_pool" "example_ucl_user_pool" {
 resource "aws_cognito_user_pool_client" "example_ucl_user_pool_client" {
   name = "example_ucl_user_pool_client"
   user_pool_id = aws_cognito_user_pool.example_ucl_user_pool.id
-  callback_urls = ["https://examples_callback.com"]
-  allowed_oauth_flows_user_pool_client = true
-  allowed_oauth_scopes = ["email", "openid"]
-  allowed_oauth_flows = ["code", "implicit"]
-  supported_identity_providers = ["COGNITO"]
-  
+  explicit_auth_flows = [
+    "ALLOW_CUSTOM_AUTH",
+    "ALLOW_REFRESH_TOKEN_AUTH",
+    "ALLOW_USER_SRP_AUTH"
+  ]
 }
+
 
 ### SECTION TO DECLARE API GATEWAY INTEGRATION WITH LAMBDA
 ### We use a custom authorizer to authenticate all API calls with the user credential tokens
