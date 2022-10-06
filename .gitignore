@@ -102,6 +102,7 @@ dist
 
 # local CSV files and ZIP files
 *.csv
+**/.DS_Store
 **/terraform/*.zip 
 
 # Local .terraform directories and files
