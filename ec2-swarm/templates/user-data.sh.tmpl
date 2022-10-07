@@ -6,6 +6,8 @@ dnf install -y python3 unzip nano jq
 # Install and configure firewalld
 dnf install firewalld
 systemctl enable --now firewalld
+
+# Open VM firewall for HTTP
 firewall-cmd --zone=public --add-port=80/tcp --permanent
 firewall-cmd --reload
 
@@ -18,7 +20,6 @@ dnf install -y yum-utils
 dnf config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
 dnf install -y docker-ce docker-ce-cli containerd.io
 systemctl enable --now docker.service
-systemctl status docker.service
 
 # Start docker swarm
 docker swarm init

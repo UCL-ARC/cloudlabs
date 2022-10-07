@@ -61,21 +61,9 @@ module "alb" {
       backend_protocol = "HTTP"
       backend_port     = 80
       target_type      = "instance"
-      targets = {
-        my_target = {
-          target_id = aws_instance.swarm[0].id
-          port      = 80
-        }
-      }
+      targets =        local.instance_targets
     }
   ]
-
-  #for instance in local.instance_ids: {
-
-  #         my_target = {
-  #          target_id = aws_instance.swarm[0].id
-  #          port      = 80
-  #        }
 
   #https_listeners = [
   #  {
@@ -102,21 +90,11 @@ module "alb" {
 locals {
   instance_ids = aws_instance.swarm.*.id
 
-  instance_targets = [
-    for i,v in local.instance_ids : {
-        "target-${i}" = {
-            target_id = v
-            port      = 80
-        }
+  instance_targets = {
+    for i,v in local.instance_ids : "target${i}" => { 
+        target_id = v 
+        port = 80 
     }
-  ]
-}
+  }
 
-#  instance_targets = [
-#    for i,v in local.instance_ids : {
-#        "target-${i}" = {
-#            target_id = v
-#            port      = 80
-#        }
-#    }
-#  ]
+}
