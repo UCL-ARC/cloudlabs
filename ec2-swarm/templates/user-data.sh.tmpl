@@ -3,6 +3,12 @@
 # Python 3 is needed for remote patching
 dnf install -y python3 unzip nano jq
 
+# Install and configure firewalld
+dnf install firewalld
+systemctl enable --now firewalld
+firewall-cmd --zone=public --add-port=80/tcp --permanent
+firewall-cmd --reload
+
 # Install AWS SSM 
 dnf install -y https://s3.eu-west-2.amazonaws.com/amazon-ssm-eu-west-2/latest/linux_amd64/amazon-ssm-agent.rpm
 systemctl enable --now amazon-ssm-agent

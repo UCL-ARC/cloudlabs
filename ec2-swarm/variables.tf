@@ -13,7 +13,7 @@ variable "machine_count" {
   default = 1
 }
 
-variable "instance_prefix" {
+variable "app_prefix" {
   type    = string
   default = "swarm"
 }
@@ -24,6 +24,10 @@ variable "instance_type" {
 }
 
 variable "private_subnet_ids" {
+  type = list(string)
+}
+
+variable "public_subnet_ids" {
   type = list(string)
 }
 

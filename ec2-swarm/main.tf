@@ -28,14 +28,15 @@ resource "aws_instance" "swarm" {
   # Attach SSM IAM profile.
   iam_instance_profile = aws_iam_instance_profile.ssm_instance.name
 
-  #vpc_security_group_ids = var.security_group_ids
+  vpc_security_group_ids = [aws_security_group.app.id]
 
   tags = {
-    Name = "${var.instance_prefix}${format("%02d", count.index + 1)}"
+    Name = "${var.app_prefix}${format("%02d", count.index + 1)}"
   }
 
   # Configure instance(s) with the contents of ./templates/user.sh.
-  user_data = templatefile("${path.root}/templates/user-data.sh.tmpl", { container = var.container, container_tag = var.container_tag })
+  user_data = templatefile("${path.root}/templates/user-data.sh.tmpl",
+  { container = var.container, container_tag = var.container_tag })
 }
 
 module "alb" {
@@ -46,9 +47,9 @@ module "alb" {
 
   load_balancer_type = "application"
 
-  vpc_id             = var.vpc_id
-  subnets            = var.private_subnet_ids
-  security_groups    = ["sg-0ab4f3e692872d7fc"]
+  vpc_id          = var.vpc_id
+  subnets         = var.public_subnet_ids
+  security_groups = [aws_security_group.alb.id]
 
   #access_logs = {
   #  bucket = "alb-logs"
@@ -63,11 +64,18 @@ module "alb" {
       targets = {
         my_target = {
           target_id = aws_instance.swarm[0].id
-          port = 80
+          port      = 80
         }
       }
     }
   ]
+
+  #for instance in local.instance_ids: {
+
+  #         my_target = {
+  #          target_id = aws_instance.swarm[0].id
+  #          port      = 80
+  #        }
 
   #https_listeners = [
   #  {
@@ -90,3 +98,25 @@ module "alb" {
     Terraform = "true"
   }
 }
+
+locals {
+  instance_ids = aws_instance.swarm.*.id
+
+  instance_targets = [
+    for i,v in local.instance_ids : {
+        "target-${i}" = {
+            target_id = v
+            port      = 80
+        }
+    }
+  ]
+}
+
+#  instance_targets = [
+#    for i,v in local.instance_ids : {
+#        "target-${i}" = {
+#            target_id = v
+#            port      = 80
+#        }
+#    }
+#  ]
