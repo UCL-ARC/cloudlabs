@@ -1,6 +1,8 @@
 # ec2-swarm
 
-An example of how to use RHEL 8 EC2 instances to run docker swarm. 
+An example of how to use RHEL 8 EC2 instances to run docker swarm. By default, one 
+instance is created, though multiple instances can be built by changing the variable
+`machine_count`.
 
 *This demonstration uses unencrpyted  HTTP (80) and should not be used in production as-is.*
 
@@ -23,7 +25,7 @@ An example of how to use RHEL 8 EC2 instances to run docker swarm.
 
 ## Usage
 
-## Environment variables
+### Environment variables
 
 | Variable                | Description                            |
 |-------------------------|----------------------------------------|
