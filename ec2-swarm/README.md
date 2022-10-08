@@ -58,3 +58,19 @@ EC2 instances.
 - Out of the box, this pattern deploys Red Hat Enterprise Linux 8 AMI with a PAYG license. It is highly 
 recommended that instances be stopped or destroyed when not in use to avoid the license cost. For production,
 a Red Hat subscription can be applied at an AWS account level.
+
+## Using SSM to connect to an instance
+
+All instances can be connected to either via the AWS console of CLI. To use the CLI, do
+the following: 
+- Install the [Session Manager Plugin](https://docs.aws.amazon.com/systems-manager/latest/userguide/session-manager-working-with-install-plugin.html) for AWS CLI.
+
+- Run the following from the CLI:
+```bash
+# To get instance IDs
+aws ec2 describe-instances --filters Name=instance-state-name,Values=running \
+   --query 'Reservations[*].Instances[*].{Instance:InstanceId,Name:Tags[?Key==`Name`]|[0].Value}' \
+   --output text --region eu-west-2
+# To start session
+aws ssm start-session --target $INSTANCE_ID --region eu-west-2
+```
