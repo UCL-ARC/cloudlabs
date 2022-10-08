@@ -1,15 +1,18 @@
+# Security group for the load balancer.
 resource "aws_security_group" "alb" {
   vpc_id      = var.vpc_id
   name_prefix = "${var.app_prefix}-alb"
   description = "Allow access to/from ALB"
 }
 
+# Security group for the app servers (EC2s)
 resource "aws_security_group" "app" {
   vpc_id      = var.vpc_id
   name_prefix = "${var.app_prefix}-app"
   description = "Allow access to/from application server(s)"
 }
 
+# Allow internet traffic to LB.
 resource "aws_security_group_rule" "http_ingress" {
   type              = "ingress"
   description       = "HTTP from internet"
@@ -20,6 +23,7 @@ resource "aws_security_group_rule" "http_ingress" {
   security_group_id = aws_security_group.alb.id
 }
 
+# Allow traffic from LB to EC2s in private subnets.
 resource "aws_security_group_rule" "alb_egress" {
   type                     = "egress"
   description              = "HTTP to private"
@@ -30,6 +34,7 @@ resource "aws_security_group_rule" "alb_egress" {
   source_security_group_id = aws_security_group.app.id
 }
 
+# Allow EC2s to accept traffic from LB.
 resource "aws_security_group_rule" "app_ingress" {
   type                     = "ingress"
   description              = "HTTP from ALB"
@@ -40,6 +45,7 @@ resource "aws_security_group_rule" "app_ingress" {
   source_security_group_id = aws_security_group.alb.id
 }
 
+# Allow EC2s to send responses to the internet.
 resource "aws_security_group_rule" "priv_to_internet_egress" {
   type              = "egress"
   description       = "Return to Internet"

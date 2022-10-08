@@ -1,3 +1,4 @@
+# Configure role for EC2.
 data "aws_iam_policy_document" "instance_assume_role_policy" {
   statement {
     actions = ["sts:AssumeRole"]
@@ -9,6 +10,7 @@ data "aws_iam_policy_document" "instance_assume_role_policy" {
   }
 }
 
+# Configure IAM role.
 resource "aws_iam_role" "ssm_role" {
   name               = "CloudLabsSSMRole"
   assume_role_policy = data.aws_iam_policy_document.instance_assume_role_policy.json

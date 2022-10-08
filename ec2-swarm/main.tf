@@ -1,4 +1,5 @@
 # Get the latest Red Hat 8 AMI.
+# ***This is the PAYG AMI.***
 data "aws_ami" "rhel8" {
   most_recent = true
 
@@ -19,6 +20,7 @@ data "aws_ami" "rhel8" {
 # subnets.
 resource "aws_instance" "swarm" {
 
+  # Number of machines to create.
   count = var.machine_count
 
   subnet_id     = element(var.private_subnet_ids, count.index)
@@ -39,6 +41,7 @@ resource "aws_instance" "swarm" {
   { container = var.container, container_tag = var.container_tag })
 }
 
+# Application load balancer
 module "alb" {
   source  = "terraform-aws-modules/alb/aws"
   version = "~> 6.0"
@@ -61,7 +64,7 @@ module "alb" {
       backend_protocol = "HTTP"
       backend_port     = 80
       target_type      = "instance"
-      targets =        local.instance_targets
+      targets          = local.instance_targets
     }
   ]
 
@@ -88,13 +91,14 @@ module "alb" {
 }
 
 locals {
+  # List of all instances.
   instance_ids = aws_instance.swarm.*.id
 
+  # Form ALB target entry for each instance: 
   instance_targets = {
-    for i,v in local.instance_ids : "target${i}" => { 
-        target_id = v 
-        port = 80 
+    for i, v in local.instance_ids : "target${i}" => {
+      target_id = v
+      port      = 80
     }
   }
-
 }
