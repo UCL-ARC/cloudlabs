@@ -38,7 +38,8 @@ The overall AWS infrastructure is shown in the diagram below.
 ![Serverless App Architecture](./ServerlessApp.svg)
 
 The AWS components used in this example are as follows:
-|| Component Name || Function ||
+| Component Name | Function |
+| --------------- | ----------------- |
 | AWS Cognito | for user sign-in and account creation |
 | AWS Lambda | "serverless" functions | 
 | AWS API Gateway | defining API functions to interact between web-app client and web service |
@@ -58,7 +59,8 @@ common security and safety features (e.g. OAuth 2 paths) are to be included. Cog
 
 ## Example Files and Folders
 
-|| Folder Name || Content ||
+| Folder Name | Content |
+| --------------- | ----------------- |
 | aws/lambda-functions | the source code for 5 lambda functions (create, delete, get all, get by ID, update) |
 | frontend | the source code for the React web-site |
 | terraforn | the scripts for building the AWS infrastructure |
@@ -67,7 +69,8 @@ common security and safety features (e.g. OAuth 2 paths) are to be included. Cog
 
 The ```Terraform``` folder contains 4 terraform scripts 
 
-|| Script Name || What does it do ||
+| Script Name | What does it do |
+| --------------- | ----------------- |
 | main.tf | "entry" terraform script that defines the provider, database, Cognito user pool and API Gateway |
 | lambdas.tf | resources relating to the 5 lambda functions needed |
 | s3buckets.tf | defines the publicly readable S3 bucket for the website and the private S3 bucket for the lambda functions |
