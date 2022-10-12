@@ -17,7 +17,7 @@ NOTE: IT department will NOT create the infrastructure for you. Rather, they wil
 ## How much does it cost? 
 
 AWS provides a [cost estimator](https://calculator.aws/#/). Unfortunately, this can be quite involved and difficult to execute, particularly if you are new to development in AWS. 
-This folder has a [document](./AWS Cost Estimation.docx) that provides estimates for a basic application.
+This folder has a [document](./AWS_Cost_Estimation.docx) that provides estimates for a basic application.
 
 NOTE: Generally, all cloud services cost their products based on usage. For research applications, that is typically lower than for commercial applications. It is also time limited. On top of that, bear in mind that UCL can also provide a discount for the costs.
 
