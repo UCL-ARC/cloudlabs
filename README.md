@@ -10,3 +10,4 @@ in AWS (and possibly later, Azure).
 
 - [Serverless app](./serverless-app/)
 - [Docker swarm on EC2](./ec2-swarm/)
+- [Getting started on AWS](./getting-started-aws)
