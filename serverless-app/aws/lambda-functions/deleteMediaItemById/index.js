@@ -1,11 +1,16 @@
 const aws = require("aws-sdk");
 
+aws.config.update({ region: "eu-west-2" });
+
 const dynamoClient = new aws.DynamoDB.DocumentClient({
     region: "eu-west-2",
 });
 const tableName = "cloudlabs-basic-userMedia-db";
 
-const deleteMediaItem = async (username, mediaItemId) => {
+const s3 = new aws.S3();
+const s3Bucket = "cloudlabs-basic-user-media-file-storage";
+
+const deleteMediaItemFromDb = async (username, mediaItemId) => {
     const params = {
         TableName: tableName,
         Key: {
@@ -21,20 +26,47 @@ const deleteMediaItem = async (username, mediaItemId) => {
     }
 };
 
+const deleteMediaItemFromS3 = async (s3Filename) => {
+    const params = {
+        Bucket: s3Bucket,
+        Key: s3Filename,
+    };
+
+    try {
+        await s3.deleteObject(params).promise();
+    } catch (err) {
+        throw err;
+    }
+};
+
 exports.handler = async (event, context) => {
-    // const username = event.requestContext.authorizer.lambda.username;
     const username = event.pathParameters.username;
     const mediaItemId = event.pathParameters.mediaItemId;
 
-    // todo: find the place first and then compare the media item creator username to the current username
+    const body = JSON.parse(event.body);
+    const s3Filename = body.s3Filename;
 
     try {
-        await deleteMediaItem(username, mediaItemId);
+        await deleteMediaItemFromDb(username, mediaItemId);
     } catch (err) {
         const response = {
             statusCode: 422,
             body: JSON.stringify({
-                message: "Something went wrong. Could not delete media item.",
+                message:
+                    "Something went wrong. Could not delete media item from the database.",
+            }),
+        };
+        return response;
+    }
+
+    try {
+        await deleteMediaItemFromS3(s3Filename);
+    } catch (err) {
+        const response = {
+            statusCode: 422,
+            body: JSON.stringify({
+                message:
+                    "Something went wrong. Could not delete media item from S3.",
             }),
         };
         return response;
