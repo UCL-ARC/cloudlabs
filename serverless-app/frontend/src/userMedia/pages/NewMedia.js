@@ -20,7 +20,14 @@ import "./NewMedia.css";
 const NewMedia = () => {
     const navigate = useNavigate();
     const auth = useContext(AuthContext);
-    const { isLoading, error, sendRequest, clearError } = useHttpClient();
+    const {
+        isLoading,
+        setIsLoading,
+        error,
+        setError,
+        sendRequest,
+        clearError,
+    } = useHttpClient();
     const [formState, inputHandler] = useForm(
         {
             title: {
@@ -64,6 +71,7 @@ const NewMedia = () => {
             "POST",
             JSON.stringify({
                 filename: newFileName,
+                fileType: file.type,
             }),
             {
                 Authorization: "Bearer " + auth.accessToken,
@@ -72,11 +80,16 @@ const NewMedia = () => {
 
         // send the file directly to s3 using the presigned url
         // this allows us to bypass handling the upload in lambda (which could be expensive)
+        setIsLoading(true);
         const result = await fetch(responseData.uploadURL, {
             method: "PUT",
             body: file,
         });
-        console.log("Result: ", result);
+
+        if (!result.ok) {
+            throw new Error(result.statusText);
+        }
+        setIsLoading(false);
 
         // final URL for the user doesn't need the query string params
         const s3FileLocation = result.url.split("?")[0];
@@ -134,7 +147,12 @@ const NewMedia = () => {
             <ErrorModal error={error} onClear={clearError} />
 
             <form className="media-form" onSubmit={mediaSubmitHandler}>
-                {isLoading && <LoadingSpinner asOverlay />}
+                {isLoading && (
+                    <LoadingSpinner
+                        asOverlay
+                        message={"File upload in progress, please wait"}
+                    />
+                )}
 
                 <Input
                     id="title"

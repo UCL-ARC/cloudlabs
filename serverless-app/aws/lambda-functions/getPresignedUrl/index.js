@@ -9,17 +9,18 @@ const s3 = new aws.S3();
 exports.handler = async (event, context) => {
     const body = JSON.parse(event.body);
     const filename = body.filename;
+    const fileType = body.fileType;
 
-    const result = await getUploadURL(filename);
+    const result = await getUploadURL(filename, fileType);
 
     return result;
 };
 
-const getUploadURL = async (filename) => {
+const getUploadURL = async (filename, fileType) => {
     const s3Params = {
         Bucket: "cloudlabs-basic-user-media-file-storage",
         Key: filename,
-        ContentType: "image/jpeg",
+        ContentType: fileType,
         ACL: "public-read",
     };
 
