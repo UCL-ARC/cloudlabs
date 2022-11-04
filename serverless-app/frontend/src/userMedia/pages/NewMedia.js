@@ -1,5 +1,6 @@
 import React, { useContext } from "react";
 import { useNavigate } from "react-router-dom";
+import { v4 as uuidv4 } from "uuid";
 
 import Input from "../../shared/components/FormElements/Input";
 import Button from "../../shared/components/FormElements/Button";
@@ -14,11 +15,10 @@ import { useForm } from "../../shared/hooks/form-hook";
 import { useHttpClient } from "../../shared/hooks/http-hook";
 import { AuthContext } from "../../shared/context/auth-context";
 
-import { handleUpload } from "../../shared/util/fileHandler";
-
 import "./NewMedia.css";
 
 const NewMedia = () => {
+    const navigate = useNavigate();
     const auth = useContext(AuthContext);
     const { isLoading, error, sendRequest, clearError } = useHttpClient();
     const [formState, inputHandler] = useForm(
@@ -39,15 +39,61 @@ const NewMedia = () => {
         false
     );
 
-    const navigate = useNavigate();
+    const formatFileName = (file) => {
+        const randomString = uuidv4();
+        const date = getDate();
+        const fileExtension = file.name.split(".").pop();
+
+        const newFileName = `${randomString}-${date}.${fileExtension}`;
+
+        // maximum of 60 characters
+        return newFileName.substring(0, 60);
+    };
+
+    const getDate = () => {
+        let today = new Date();
+        return today.toISOString().split("T")[0];
+    };
+
+    const s3uploadHandler = async (file) => {
+        const newFileName = formatFileName(file);
+
+        // get a presigned url from aws
+        const responseData = await sendRequest(
+            `${process.env.REACT_APP_BACKEND_URL}/getPresignedUrl`,
+            "POST",
+            JSON.stringify({
+                filename: newFileName,
+            }),
+            {
+                Authorization: "Bearer " + auth.accessToken,
+            }
+        );
+
+        // send the file directly to s3 using the presigned url
+        // this allows us to bypass handling the upload in lambda (which could be expensive)
+        const result = await fetch(responseData.uploadURL, {
+            method: "PUT",
+            body: file,
+        });
+        console.log("Result: ", result);
+
+        // final URL for the user doesn't need the query string params
+        const s3FileLocation = result.url.split("?")[0];
+
+        return { filename: newFileName, s3FileLocation: s3FileLocation };
+    };
 
     const mediaSubmitHandler = async (event) => {
         event.preventDefault();
 
-        // upload the file to S3
+        // upload the file to S3 using a presigned url
         let uploadedFile;
         try {
-            uploadedFile = await handleUpload(formState.inputs.file.value);
+            uploadedFile = await s3uploadHandler(
+                formState.inputs.file.value,
+                auth
+            );
         } catch (err) {
             console.log(err);
         }
@@ -68,9 +114,9 @@ const NewMedia = () => {
                     title: formState.inputs.title.value,
                     description: formState.inputs.description.value,
                     //image: formState.inputs.image.value,
-                    fileLocation: uploadedFile.location,
+                    fileLocation: uploadedFile.s3FileLocation,
                     fileType: formState.inputs.file.value.type,
-                    s3Filename: uploadedFile.key,
+                    s3Filename: uploadedFile.filename,
                 }),
                 {
                     Authorization: "Bearer " + auth.accessToken,
