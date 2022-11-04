@@ -40,7 +40,6 @@ const SignupConfirm = (props) => {
                     setError(err.message);
                     return;
                 }
-                console.log("call result: " + result);
 
                 if (result !== "SUCCESS")
                     setError("Could not confirm user. Please try again later");
