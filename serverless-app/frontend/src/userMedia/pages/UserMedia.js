@@ -29,7 +29,7 @@ const UserMedia = () => {
                     }
                 );
 
-                setLoadedMedia(responseData.Items);
+                setLoadedMedia(responseData);
             } catch (err) {}
         };
         fetchMedia();

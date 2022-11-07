@@ -6,7 +6,6 @@ const dynamoClient = new aws.DynamoDB.DocumentClient({
 const tableName = "cloudlabs-basic-userMedia-db";
 
 exports.handler = async (event, context) => {
-    // const username = event.requestContext.authorizer.lambda.username;
     const username = event.pathParameters.username;
     const mediaItemId = event.pathParameters.mediaItemId;
 

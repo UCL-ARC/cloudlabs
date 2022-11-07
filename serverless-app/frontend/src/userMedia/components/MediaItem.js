@@ -24,6 +24,7 @@ const MediaItem = (props) => {
         title,
         fileType,
         s3Filename,
+        presignedUrl,
     } = props;
 
     const showDeleteWarningHandler = () => {
@@ -89,12 +90,12 @@ const MediaItem = (props) => {
 
                     <div className="media-item__file">
                         {fileType.includes("image") && (
-                            <img src={fileLocation} alt={title} />
+                            <img src={presignedUrl} alt={title} />
                         )}
 
                         {fileType.includes("video") && (
                             <video controls controlsList="nodownload">
-                                <source src={fileLocation} />
+                                <source src={presignedUrl} />
                             </video>
                         )}
                     </div>

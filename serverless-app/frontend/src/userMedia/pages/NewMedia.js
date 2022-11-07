@@ -81,14 +81,21 @@ const NewMedia = () => {
         // send the file directly to s3 using the presigned url
         // this allows us to bypass handling the upload in lambda (which could be expensive)
         setIsLoading(true);
-        const result = await fetch(responseData.uploadURL, {
-            method: "PUT",
-            body: file,
-        });
+
+        let result;
+        try {
+            result = await fetch(responseData.uploadURL, {
+                method: "PUT",
+                body: file,
+            });
+        } catch (err) {
+            console.log(err);
+        }
 
         if (!result.ok) {
             throw new Error(result.statusText);
         }
+
         setIsLoading(false);
 
         // final URL for the user doesn't need the query string params

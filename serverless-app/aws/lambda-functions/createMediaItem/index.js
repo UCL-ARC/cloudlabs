@@ -7,7 +7,6 @@ const dynamoClient = new aws.DynamoDB.DocumentClient({
 const tableName = "cloudlabs-basic-userMedia-db";
 
 exports.handler = async (event, context) => {
-    //const username = event.requestContext.authorizer.lambda.username;
     const username = event.pathParameters.username;
 
     if (event.body == null) {
@@ -25,33 +24,10 @@ exports.handler = async (event, context) => {
     const createdMediaItem = {
         MediaTitle: body.title,
         MediaDescription: body.description,
-        FileLocation: body.fileLocation, // upload to S3 currently happens on the frontend, move to a lambda instead?
+        FileLocation: body.fileLocation,
         FileType: body.fileType,
         S3Filename: body.s3Filename,
     };
-
-    // let user;
-    // try {
-    //     user = await findExistingUser(username);
-    // } catch (err) {
-    //     const response = {
-    //         statusCode: 500,
-    //         body: JSON.stringify({
-    //             message: "Something went wrong. Please try again later.",
-    //         }),
-    //     };
-    //     return response;
-    // }
-
-    // if (user.Count === 0 || user.Items.length === 0) {
-    //     const response = {
-    //         statusCode: 404,
-    //         body: JSON.stringify({
-    //             message: "Could not find user for provided credentials.",
-    //         }),
-    //     };
-    //     return response;
-    // }
 
     const params = {
         TableName: tableName,

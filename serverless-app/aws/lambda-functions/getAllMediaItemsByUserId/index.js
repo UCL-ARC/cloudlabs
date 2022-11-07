@@ -5,6 +5,9 @@ const dynamoClient = new aws.DynamoDB.DocumentClient({
 });
 const tableName = "cloudlabs-basic-userMedia-db";
 
+const s3 = new aws.S3();
+const s3Bucket = "cloudlabs-basic-user-media-file-storage";
+
 const getAllMediaItemsByUserId = async (username) => {
     const params = {
         TableName: tableName,
@@ -30,8 +33,23 @@ const getAllMediaItemsByUserId = async (username) => {
     return userMedia;
 };
 
+// requests temporary presigned urls to give access to private files in S3
+const getPresignedUrl = async (filename) => {
+    if (!filename) return;
+
+    var params = {
+        Bucket: s3Bucket,
+        Key: filename,
+        Expires: 60 * 5, // 5 mins
+    };
+
+    // is there some better error handling here?
+    return new Promise((resolve, reject) => {
+        resolve(s3.getSignedUrl("getObject", params));
+    });
+};
+
 exports.handler = async (event, context) => {
-    //const username = event.requestContext.authorizer.lambda.username;
     const username = event.pathParameters.username;
 
     let userMedia;
@@ -47,5 +65,16 @@ exports.handler = async (event, context) => {
         return response;
     }
 
-    return userMedia;
+    // get presigned urls for every media item so that private files can be temporarily shared
+    // for more info, look up AWS presigned urls
+    const itemsWithPresignedUrls = await Promise.all(
+        userMedia.Items.map(async (mediaItem) => {
+            return {
+                ...mediaItem,
+                presignedUrl: await getPresignedUrl(mediaItem.S3Filename),
+            };
+        })
+    );
+
+    return itemsWithPresignedUrls;
 };
