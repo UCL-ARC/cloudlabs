@@ -61,27 +61,3 @@ exports.handler = async (event, context) => {
 
     return { media: createdMediaItem };
 };
-
-const findExistingUser = async (username) => {
-    const params = {
-        TableName: tableName,
-        KeyConditionExpression: "#pk = :pk and begins_with(#sk, :sk)",
-        ExpressionAttributeNames: {
-            "#pk": "pk",
-            "#sk": "sk",
-        },
-        ExpressionAttributeValues: {
-            ":pk": username,
-            ":sk": "user",
-        },
-    };
-
-    let existingUser;
-    try {
-        existingUser = await dynamoClient.query(params).promise();
-    } catch (err) {
-        throw err;
-    }
-
-    return existingUser;
-};
