@@ -47,8 +47,6 @@ exports.handler = async (event, context) => {
         },
     };
 
-    console.log(params);
-
     try {
         await dynamoClient.update(params).promise();
     } catch (err) {
