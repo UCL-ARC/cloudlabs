@@ -41,6 +41,40 @@ resource "aws_s3_bucket_policy" "serverless_app_web_policy" {
   })
 }
 
+### BUCKET FOR THE MEDIA STORAGE
+resource "aws_s3_bucket" "media_for_serverless_app" {
+  tags = {
+    Name = "S3BucketForMediaOfServerlessApp"
+  }
+}
+
+resource "aws_s3_bucket_acl" "webapp_media_bucket" {
+  bucket = aws_s3_bucket.media_for_serverless_app.id
+  acl = "public-read"
+}
+
+resource "aws_s3_bucket_policy" "serverless_app_media_policy" {
+  bucket = aws_s3_bucket.media_for_serverless_app.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Sid       = "PublicReadGetObject"
+        Effect    = "Allow"
+        Principal = "*"
+        Action    = "s3:GetObject"
+        Resource = [
+          aws_s3_bucket.media_for_serverless_app.arn,
+          "${aws_s3_bucket.media_for_serverless_app.arn}/*",
+        ]
+      },
+    ]
+  })
+
+}
+
+### BUCKET FOR THE LAMBDA FUNCTIONS
 #S3 Bucket to store the lambda functions and web app in
 resource "aws_s3_bucket" "lambda_bucket_for_serverless_app" {
   tags = {
