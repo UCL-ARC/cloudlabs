@@ -1,12 +1,12 @@
 const aws = require("aws-sdk");
 
 const dynamoClient = new aws.DynamoDB.DocumentClient({
-    region: "eu-west-2",
+    region: process.env.AWS_REGION_LOCATION,
 });
-const tableName = "cloudlabs-basic-userMedia-db";
+const tableName = process.env.AWS_DYNAMODB_TABLE;
 
 const s3 = new aws.S3();
-const s3Bucket = "cloudlabs-basic-user-media-file-storage";
+const s3Bucket = process.env.AWS_S3_BUCKET;
 
 const getAllMediaItemsByUserId = async (username) => {
     const params = {

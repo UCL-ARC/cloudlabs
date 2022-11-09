@@ -1,9 +1,9 @@
 const aws = require("aws-sdk");
 
 const dynamoClient = new aws.DynamoDB.DocumentClient({
-    region: "eu-west-2",
+    region: process.env.AWS_REGION_LOCATION,
 });
-const tableName = "cloudlabs-basic-userMedia-db";
+const tableName = process.env.AWS_DYNAMODB_TABLE;
 
 exports.handler = async (event, context) => {
     const username = event.pathParameters.username;

@@ -2,9 +2,9 @@ const aws = require("aws-sdk");
 const { v4: uuidv4 } = require("uuid");
 
 const dynamoClient = new aws.DynamoDB.DocumentClient({
-    region: "eu-west-2",
+    region: process.env.AWS_REGION_LOCATION,
 });
-const tableName = "cloudlabs-basic-userMedia-db";
+const tableName = process.env.AWS_DYNAMODB_TABLE;
 
 exports.handler = async (event, context) => {
     const username = event.pathParameters.username;
@@ -47,9 +47,12 @@ exports.handler = async (event, context) => {
         },
     };
 
+    console.log(params);
+
     try {
         await dynamoClient.update(params).promise();
     } catch (err) {
+        console.log(err);
         const response = {
             statusCode: 500,
             body: JSON.stringify({

@@ -1,9 +1,9 @@
 const aws = require("aws-sdk");
 
-aws.config.update({ region: "eu-west-2" });
+aws.config.update({ region: process.env.AWS_REGION_LOCATION });
 const s3 = new aws.S3();
 
-const s3Bucket = "cloudlabs-basic-user-media-file-storage";
+const s3Bucket = process.env.AWS_S3_BUCKET;
 
 // this function allows us to get a presigned url from aws S3
 // we then make a PUT request on the frontend using this presigned url as the endpoint
