@@ -14,11 +14,11 @@ const UserMedia = () => {
 
     const username = useParams().username;
 
-    console.log(auth);
-
     useEffect(() => {
         const fetchMedia = async () => {
             // authorizing the GET request makes sure users can only access their own media and no one elses
+            // ideally, you would not want to pass the username as a query param.
+            // instead, you could intercept the auth token in lambda and extract the username there
             try {
                 const responseData = await sendRequest(
                     `${process.env.REACT_APP_BACKEND_URL}/media/${username}`,
@@ -29,9 +29,7 @@ const UserMedia = () => {
                     }
                 );
 
-                console.log(responseData);
-
-                setLoadedMedia(responseData.Items);
+                setLoadedMedia(responseData);
             } catch (err) {}
         };
         fetchMedia();

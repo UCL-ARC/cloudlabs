@@ -8,8 +8,6 @@ import LoadingSpinner from "../../shared/components/UIElements/LoadingSpinner";
 import { AuthContext } from "../../shared/context/auth-context";
 import { useHttpClient } from "../../shared/hooks/http-hook";
 
-import { handleFileDelete } from "../../shared/util/fileHandler";
-
 import "./MediaItem.css";
 
 const MediaItem = (props) => {
@@ -26,6 +24,7 @@ const MediaItem = (props) => {
         title,
         fileType,
         s3Filename,
+        presignedUrl,
     } = props;
 
     const showDeleteWarningHandler = () => {
@@ -39,21 +38,19 @@ const MediaItem = (props) => {
     const confirmDeleteHandler = async () => {
         setShowConfirmModal(false);
 
+        // delete file from db and s3
         try {
-            const response = await handleFileDelete(s3Filename);
-
-            if (!response.ok) {
-                throw new Error(response.message);
-            }
-
             await sendRequest(
                 `${process.env.REACT_APP_BACKEND_URL}/media/${auth.username}/${mediaId}`,
                 "DELETE",
-                null,
+                JSON.stringify({
+                    s3Filename: s3Filename,
+                }),
                 {
                     Authorization: "Bearer " + auth.accessToken,
                 }
             );
+
             onDelete(mediaId);
         } catch (err) {
             console.log(err);
@@ -93,12 +90,12 @@ const MediaItem = (props) => {
 
                     <div className="media-item__file">
                         {fileType.includes("image") && (
-                            <img src={fileLocation} alt={title} />
+                            <img src={presignedUrl} alt={title} />
                         )}
 
                         {fileType.includes("video") && (
                             <video controls controlsList="nodownload">
-                                <source src={fileLocation} />
+                                <source src={presignedUrl} />
                             </video>
                         )}
                     </div>

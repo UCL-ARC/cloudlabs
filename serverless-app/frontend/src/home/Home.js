@@ -7,8 +7,6 @@ import "./Home.css";
 const Home = () => {
     const auth = useContext(AuthContext);
 
-    console.log(auth);
-
     return (
         <main className="homepage-container">
             <p>Hello {auth.username}</p>

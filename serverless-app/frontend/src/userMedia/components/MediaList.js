@@ -30,6 +30,7 @@ const MediaList = (props) => {
                     description={item.MediaDescription}
                     fileType={item.FileType}
                     s3Filename={item.S3Filename}
+                    presignedUrl={item.presignedUrl}
                     username={item.pk}
                     onDelete={onDeleteMedia}
                 />
