@@ -84,7 +84,6 @@ const Auth = () => {
                 const accessTokenExpiration = result
                     .getAccessToken()
                     .getExpiration();
-                console.log(accessTokenExpiration);
 
                 const userId = result.getIdToken().decodePayload()["sub"];
                 const username = result.getIdToken().decodePayload()[

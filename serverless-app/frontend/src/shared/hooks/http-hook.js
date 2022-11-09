@@ -54,5 +54,12 @@ export const useHttpClient = () => {
         };
     }, []);
 
-    return { isLoading, error, sendRequest, clearError };
+    return {
+        isLoading,
+        setIsLoading,
+        error,
+        setError,
+        sendRequest,
+        clearError,
+    };
 };
