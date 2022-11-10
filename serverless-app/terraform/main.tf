@@ -30,7 +30,7 @@ provider "aws" {
 
 
 resource "aws_dynamodb_table" "user-places-table" {
-  name           = "users_and_places"
+  name           = var.dynamodb_name
   billing_mode   = "PROVISIONED"
   read_capacity  = 5
   write_capacity = 5

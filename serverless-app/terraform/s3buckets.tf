@@ -44,7 +44,7 @@ resource "aws_s3_bucket_policy" "serverless_app_web_policy" {
 ### BUCKET FOR THE MEDIA STORAGE
 resource "aws_s3_bucket" "media_for_serverless_app" {
   tags = {
-    Name = "S3BucketForMediaOfServerlessApp"
+    Name = var.s3_media_bucket_name
   }
 }
 

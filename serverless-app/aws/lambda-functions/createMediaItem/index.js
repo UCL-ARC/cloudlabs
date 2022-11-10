@@ -2,9 +2,9 @@ const aws = require("aws-sdk");
 const { v4: uuidv4 } = require("uuid");
 
 const dynamoClient = new aws.DynamoDB.DocumentClient({
-    region: process.env.AWS_REGION_LOCATION,
+    region: process.env.TF_VAL_aws_region,
 });
-const tableName = process.env.AWS_DYNAMODB_TABLE;
+const tableName = process.env.TF_VAL_dynamodb_name;
 
 exports.handler = async (event, context) => {
     const username = event.pathParameters.username;

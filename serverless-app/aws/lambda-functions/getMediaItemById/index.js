@@ -1,9 +1,9 @@
 const aws = require("aws-sdk");
 
 const dynamoClient = new aws.DynamoDB.DocumentClient({
-    region: process.env.AWS_REGION_LOCATION,
+    region: process.env.TF_VAL_aws_region,
 });
-const tableName = process.env.AWS_DYNAMODB_TABLE;
+const tableName = process.env.TF_VAL_dynamodb_name;
 
 const getUserMediaItem = async (username, mediaItemId) => {
     const params = {
