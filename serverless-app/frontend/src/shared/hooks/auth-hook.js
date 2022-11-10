@@ -4,7 +4,7 @@ import UserPool from "../util/UserPool";
 
 let logoutTimer;
 //const timeToAutoLogout = 1000 * 60 * 60 * 24 * 7; // 7 days (in milliseconds)
-const timeToAutoLogout = 1000 * 60 * 60; // 1 hour (in milliseconds)
+const localStorageId = process.env.REACT_APP_LOCAL_STORAGE_ID;
 
 export const useAuth = () => {
     const [userId, setUserId] = useState(false);
@@ -37,21 +37,12 @@ export const useAuth = () => {
             setAccessToken(accessToken);
             setAccessTokenExpiration(accessTokenExpiration);
 
-            console.log(
-                new Date(accessTokenExpiration * 1000).getTime() -
-                    new Date().getTime()
-            );
-
             localStorage.setItem(
-                "userData",
+                localStorageId,
                 JSON.stringify({
                     userId: userId,
                     username: username,
                     userEmail: userEmail,
-                    // idToken: idToken,
-                    // idTokenExpiration: idTokenExpiration,
-                    // accessToken: accessToken,
-                    // accessTokenExpiration: accessTokenExpiration,
                 })
             );
         },
@@ -71,7 +62,7 @@ export const useAuth = () => {
         setAccessTokenExpiration(null);
         setRefreshToken(null);
 
-        localStorage.removeItem("userData");
+        localStorage.removeItem(localStorageId);
         clearTimeout(logoutTimer);
 
         window.location.replace("/");

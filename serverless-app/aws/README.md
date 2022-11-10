@@ -11,6 +11,14 @@ For now, these lambda functions are uploaded to AWS manually but this will event
 -   Go to the lambda section in your AWS accound.
 -   Create a new function, and choose the option to upload a .zip archive.
 
+# Adding environment variables to lambda functions
+
+This can be done via the console or via Terraform. If using the console, see each lambda function for which environment variables need to be set. The following environment variables are currently used:
+
+-   AWS_REGION_LOCATION
+-   AWS_S3_BUCKET
+-   AWS_DYNAMODB_TABLE
+
 # Instructions on deploying lambda functions using Terraform will be added soon
 
 Instructions go here...

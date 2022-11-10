@@ -53,3 +53,9 @@ Your app is ready to be deployed!
 ### Hosting
 
 The `build` folder can be deployed to your hosting provider of choice (e.g. GitHub pages, AWS etc.)
+
+---
+
+### Environment variables
+
+Make a `.env` and `.env.production` file in the `/frontend` directory. Copy the values from `.env.example` into these files, make sure to populate these with your appropriate variable values.
