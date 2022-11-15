@@ -110,7 +110,6 @@ resource "aws_lambda_function" "createMediaItem_lambda" {
   role             = aws_iam_role.lambda_exec.arn
   environment {
     variables = {
-      TF_VAL_aws_region = var.aws_region
       TF_VAR_dynamodb_name = var.dynamodb_name
       TF_VAR_s3_media_bucket_name = var.s3_media_bucket_name
     }
@@ -128,7 +127,6 @@ resource "aws_lambda_function" "deleteMediaItemById_lambda" {
   role             = aws_iam_role.lambda_exec.arn
   environment {
     variables = {
-      TF_VAL_aws_region = var.aws_region
       TF_VAR_dynamodb_name = var.dynamodb_name
       TF_VAR_s3_media_bucket_name = var.s3_media_bucket_name
     }
@@ -146,7 +144,6 @@ resource "aws_lambda_function" "getAllMediaItemsByUserId_lambda" {
   role             = aws_iam_role.lambda_exec.arn
   environment {
     variables = {
-      TF_VAL_aws_region = var.aws_region
       TF_VAR_dynamodb_name = var.dynamodb_name
       TF_VAR_s3_media_bucket_name = var.s3_media_bucket_name
     }
@@ -164,7 +161,6 @@ resource "aws_lambda_function" "getMediaItemById_lambda" {
   role             = aws_iam_role.lambda_exec.arn
   environment {
     variables = {
-      TF_VAL_aws_region = var.aws_region
       TF_VAR_dynamodb_name = var.dynamodb_name
       TF_VAR_s3_media_bucket_name = var.s3_media_bucket_name
     }
@@ -182,7 +178,6 @@ resource "aws_lambda_function" "updateMediaItem_lambda" {
   role             = aws_iam_role.lambda_exec.arn
   environment {
     variables = {
-      TF_VAL_aws_region = var.aws_region
       TF_VAR_dynamodb_name = var.dynamodb_name
       TF_VAR_s3_media_bucket_name = var.s3_media_bucket_name
     }
@@ -201,7 +196,6 @@ resource "aws_lambda_function" "getPresignedUrl_lambda" {
   role             = aws_iam_role.lambda_exec.arn
   environment {
     variables = {
-      TF_VAL_aws_region = var.aws_region
       TF_VAR_dynamodb_name = var.dynamodb_name
       TF_VAR_s3_media_bucket_name = var.s3_media_bucket_name
     }

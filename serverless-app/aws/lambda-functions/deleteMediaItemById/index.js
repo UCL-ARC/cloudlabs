@@ -1,9 +1,9 @@
 const aws = require("aws-sdk");
 
-aws.config.update({ region: process.env.TF_VAL_aws_region });
+aws.config.update({ region: process.env.AWS_REGION });
 
 const dynamoClient = new aws.DynamoDB.DocumentClient({
-    region: process.env.TF_VAL_aws_region,
+    region: process.env.AWS_REGION,
 });
 const tableName = process.env.TF_VAL_dynamodb_name;
 
