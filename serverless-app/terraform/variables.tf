@@ -13,6 +13,23 @@ variable "dynamodb_name" {
   type = string
 }
 
+variable "backend_url" {
+  description = "The URL for the web app"
+  type = string
+}
+variable "local_storage_id" {
+  description = "AWS DynamoDB"
+  type = string
+}
+variable "cognito_userpool_id" {
+  description = "Cognito Userpool ID"
+  type = string
+}
+variable "cognito_client_id" {
+  description = "Cognito Client ID"
+  type = string
+}
+
 variable "local_lambda_source" {
   description = "Local path for lambda functions"
   type = string

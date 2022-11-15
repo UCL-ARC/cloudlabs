@@ -127,3 +127,10 @@ resource "aws_s3_object" "serverless_update_object" {
   source = data.archive_file.updateMediaItem_data.output_path
   etag   = filemd5(data.archive_file.updateMediaItem_data.output_path)
 }
+
+resource "aws_s3_object" "serverless_presigned_object" {
+  bucket = aws_s3_bucket.lambda_bucket_for_serverless_app.id
+  key    = "getPresignedUrl.zip"
+  source = data.archive_file.getPresignedUrl_data.output_path
+  etag   = filemd5(data.archive_file.getPresignedUrl_data.output_path)
+}
