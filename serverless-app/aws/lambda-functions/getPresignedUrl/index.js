@@ -23,7 +23,6 @@ const getUploadURL = async (filename, fileType) => {
         Bucket: s3Bucket,
         Key: filename,
         ContentType: fileType,
-        ACL: "bucket-owner-full-control",
     };
 
     return new Promise((resolve, reject) => {
