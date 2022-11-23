@@ -52,12 +52,7 @@ resource "aws_s3_bucket" "media_for_serverless_app" {
 
 resource "aws_s3_bucket_acl" "webapp_media_bucket" {
   bucket = aws_s3_bucket.media_for_serverless_app.id
-  access_control_policy {
-    grant {
-      grantee {
-      }
-    }
-  }
+  acl = "private"
 }
 
 resource "aws_s3_bucket_policy" "serverless_app_media_policy" {

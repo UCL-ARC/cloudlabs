@@ -111,7 +111,10 @@ resource "aws_cognito_user_pool" "example_ucl_user_pool" {
 
   mfa_configuration = "OFF"
   account_recovery_setting {
-    recovery_mechanism = ["verified_email"]
+    recovery_mechanism {
+      name = "verified_email"
+      priority = 1
+    }
   }
   auto_verified_attributes = ["email"]
 }
@@ -176,7 +179,7 @@ resource "aws_lambda_permission" "api_gateway_createmedia_permission" {
   function_name = aws_lambda_function.createMediaItem_lambda.function_name
   action        = "lambda:InvokeFunction"
   principal     = "apigateway.amazonaws.com"
-  source_arn = "${aws_api_gateway_rest_api.serverless_gateway.execution_arn}/*/*/*"
+  source_arn = "${aws_apigatewayv2_api.serverless_gateway.execution_arn}/*/*/*"
 }
 
 # DeleteMedia
@@ -185,7 +188,7 @@ resource "aws_lambda_permission" "api_gateway_deletemedia_permission" {
   function_name = aws_lambda_function.deleteMediaItemById_lambda.function_name
   action        = "lambda:InvokeFunction"
   principal     = "apigateway.amazonaws.com"
-  source_arn = "${aws_api_gateway_rest_api.serverless_gateway.execution_arn}/*/*/*"
+  source_arn = "${aws_apigatewayv2_api.serverless_gateway.execution_arn}/*/*/*"
 }
 
 # GetMediaForUser
@@ -194,7 +197,7 @@ resource "aws_lambda_permission" "api_gateway_getmediaforuser_permission" {
   function_name = aws_lambda_function.getAllMediaItemsByUserId_lambda.function_name
   action        = "lambda:InvokeFunction"
   principal     = "apigateway.amazonaws.com"
-  source_arn = "${aws_api_gateway_rest_api.serverless_gateway.execution_arn}/*/*/*"
+  source_arn = "${aws_apigatewayv2_api.serverless_gateway.execution_arn}/*/*/*"
 }
 
 # GetMediaByID
@@ -203,7 +206,7 @@ resource "aws_lambda_permission" "api_gateway_getmediabyid_permission" {
   function_name = aws_lambda_function.getMediaItemById_lambda.function_name
   action        = "lambda:InvokeFunction"
   principal     = "apigateway.amazonaws.com"
-  source_arn = "${aws_api_gateway_rest_api.serverless_gateway.execution_arn}/*/*/*"
+  source_arn = "${aws_apigatewayv2_api.serverless_gateway.execution_arn}/*/*/*"
 }
 
 # UpdateMedia
@@ -212,7 +215,7 @@ resource "aws_lambda_permission" "api_gateway_updatemedia_permission" {
   function_name = aws_lambda_function.updateMediaItem_lambda.function_name
   action        = "lambda:InvokeFunction"
   principal     = "apigateway.amazonaws.com"
-  source_arn = "${aws_api_gateway_rest_api.serverless_gateway.execution_arn}/*/*/*"
+  source_arn = "${aws_apigatewayv2_api.serverless_gateway.execution_arn}/*/*/*"
 }
 
 # PresignedUrl
@@ -221,7 +224,7 @@ resource "aws_lambda_permission" "api_gateway_presignedurl_permission" {
   function_name = aws_lambda_function.getPresignedUrl_lambda.function_name
   action        = "lambda:InvokeFunction"
   principal     = "apigateway.amazonaws.com"
-  source_arn = "${aws_api_gateway_rest_api.serverless_gateway.execution_arn}/*/*/*"
+  source_arn = "${aws_apigatewayv2_api.serverless_gateway.execution_arn}/*/*/*"
 }
 
 
