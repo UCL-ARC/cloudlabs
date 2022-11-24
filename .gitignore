@@ -144,3 +144,4 @@ dist
 **/terraform.rc
 **/**.drawio.bkp
 **/.env
+**/*.json 
