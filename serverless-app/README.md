@@ -43,7 +43,7 @@ The AWS components used in this example are as follows:
 | AWS Cognito | for user sign-in and account creation |
 | AWS Lambda | "serverless" functions | 
 | AWS API Gateway | defining API functions to interact between web-app client and web service |
-| AWS S3 Bucket | S3 (Simple Storage Solution) to hold the web app run in browsers as well as the source code for the lambda functions |
+| AWS S3 Bucket | S3 (Simple Storage Solution) we have 3 buckets: a.) a "public" bucket for the web app, b.) a bucket for media files and c.) a bucket for the lambda functions |
 | AWS Dynamodb Database | the database (NoSQL) holding users' data |
 
 ### Why this architecture?
@@ -75,6 +75,10 @@ The ```Terraform``` folder contains 4 terraform scripts
 | lambdas.tf | resources relating to the 5 lambda functions needed |
 | s3buckets.tf | defines the publicly readable S3 bucket for the website and the private S3 bucket for the lambda functions |
 | variables.tf | common names/variables used by the other scripts |
+| outputs.tf | captures the IDs of the Cognito user pool and user pool client |
+| assume_role_policy.json | AWS role policy for the use of lambda functions |
+| dynamodb_watch_policy.json | Policy for the use of the DynamoDB database and logging functions |
+| build_infrastructure.sh | a `zsh` script for an end to end creation of all components and output files with Terraform | 
 
 
 
