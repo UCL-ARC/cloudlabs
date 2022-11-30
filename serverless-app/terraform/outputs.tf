@@ -7,3 +7,8 @@ output "user_pool_client_id" {
     description = "Cognito User Pool Client ID"
     value = aws_cognito_user_pool_client.example_ucl_user_pool_client.id
 }
+
+output "aws_endpoint" {
+    description = "AWS API Endpoint"
+    value = aws_apigatewayv2_api.serverless_gateway.api_endpoint
+}
