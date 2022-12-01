@@ -1,6 +1,7 @@
 ### THE WEB-SITE BUCKET
 resource "aws_s3_bucket" "serverless_app_website" {
   bucket = var.s3_web_bucket_name
+  force_destroy = true
   tags = {
     Name = var.s3_web_bucket_name
   }
@@ -45,6 +46,7 @@ resource "aws_s3_bucket_policy" "serverless_app_web_policy" {
 ### BUCKET FOR THE MEDIA STORAGE
 resource "aws_s3_bucket" "media_for_serverless_app" {
   bucket = var.s3_media_bucket_name
+  force_destroy = true
   tags = {
     Name = var.s3_media_bucket_name
   }
@@ -82,6 +84,7 @@ resource "aws_s3_bucket_policy" "serverless_app_media_policy" {
 #S3 Bucket to store the lambda functions and web app in
 resource "aws_s3_bucket" "lambda_bucket_for_serverless_app" {
   bucket = "terraform-bucketforlambdafunctions"
+  force_destroy = true
   tags = {
     Name = "bucketforlambdafunctions"
   }
