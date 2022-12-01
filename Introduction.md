@@ -2,7 +2,6 @@
 Before you can build applications on AWS at UCL there is a bit of preparation involved.
 I have listed that in a step by step guide below.
 
-
 # Step One: Get A AWS Account
 UCL has an agreement with Amazon, including discounts on AWS services. 
 In order to benefit from that, you will need to request a UCL AWS account from ISD. (see link above).

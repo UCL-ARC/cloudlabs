@@ -1,7 +1,11 @@
 # AWS Serverless Web Example Application
 
-In this example application we want to demonstrate how to host a web app in AWS (Amazon Web Services) and how to manage the cloud components using [Terraform](https://www.terraform.io). 
+This example demonstrates how to build a web app in AWS using Terraform.
+The web app is built on the React framework 
 
+## Requirements
+- You need to have completed ALL of the steps listed in the [Introduction](../Introduction.md)
+- You will need to have [React](https://reactjs.org) and other components [NodeJS](https://nodejs.org/en/) installed
 
 ## Web App Use Case
 
@@ -19,6 +23,9 @@ For this reason, we created an example app with the following features:
 
 The purpose of this exercise is to provide a concrete example of how a serverless web app can be built on AWS.
 Feel free to use the code as a starting point for your own app.
+
+## How to use this example
+See our [HowTo](./HowTo.md) document.
 
 ### Limitations
 
