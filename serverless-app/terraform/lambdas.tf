@@ -1,38 +1,3 @@
-data "archive_file" "createMediaItem_data" {
-  type        = "zip"
-  source_dir  = "${var.local_lambda_source}/createMediaItem"
-  output_path = "${path.module}/createMediaItem.zip"
-}
-
-data "archive_file" "deleteMediaItemById_data" {
-  type        = "zip"
-  source_dir  = "${var.local_lambda_source}/deleteMediaItemById"
-  output_path = "${path.module}/deleteMediaItemById.zip"
-}
-
-data "archive_file" "getAllMediaItemsByUserId_data" {
-  type        = "zip"
-  source_dir  = "${var.local_lambda_source}/getAllMediaItemsByUserId"
-  output_path = "${path.module}/getAllMediaItemsByUserId.zip"
-}
-
-data "archive_file" "getMediaItemById_data" {
-  type        = "zip"
-  source_dir  = "${var.local_lambda_source}/getMediaItemById"
-  output_path = "${path.module}/getMediaItemById.zip"
-}
-
-data "archive_file" "updateMediaItem_data" {
-  type        = "zip"
-  source_dir  = "${var.local_lambda_source}/updateMediaItem"
-  output_path = "${path.module}/updateMediaItem.zip"
-}
-
-data "archive_file" "getPresignedUrl_data" {
-  type = "zip"
-  source_dir  = "${var.local_lambda_source}/getPresignedUrl"
-  output_path = "${path.module}/getPresignedUrl.zip"  
-}
 
 ### DEFINE THE ROLE AND ROLE POLICIES FOR LAMBDA FUNCTIONS
 ### lambda functions need to be executed with a defined role 

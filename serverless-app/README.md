@@ -7,7 +7,7 @@ The web app is built on the React framework
 - You need to have completed ALL of the steps listed in the [Introduction](../Introduction.md)
 - You will need to have [React](https://reactjs.org) and other components [NodeJS](https://nodejs.org/en/) installed
 
-## Web App Use Case
+# Web App Use Case
 
 A common use case for web applications in research is to provide a service that will:
 - allow users to create and manipulate data and content
@@ -25,7 +25,8 @@ The purpose of this exercise is to provide a concrete example of how a serverles
 Feel free to use the code as a starting point for your own app.
 
 ## How to use this example
-See our [HowTo](./HowTo.md) document.
+- Follow the steps in [Introduction](../Introduction.md)
+- Follow the 4 steps in the [HowTo](./HowTo.md). Generally - do the Terraform Install first, then build/deploy the React app
 
 ### Limitations
 
@@ -48,9 +49,11 @@ The AWS components used in this example are as follows:
 | Component Name | Function |
 | --------------- | ----------------- |
 | AWS Cognito | for user sign-in and account creation |
-| AWS Lambda | "serverless" functions | 
+| AWS Lambda | "serverless" functions. We have in total 6 lambda functions | 
 | AWS API Gateway | defining API functions to interact between web-app client and web service |
-| AWS S3 Bucket | S3 (Simple Storage Solution) we have 3 buckets: a.) a "public" bucket for the web app, b.) a bucket for media files and c.) a bucket for the lambda functions |
+| AWS S3 Bucket | S3 (Simple Storage Solution) bucket for the web app. Public access |
+| AWS S3 Bucket | S3 (Simple Storage Solution) bucket for the media files. Private access only |
+| AWS S3 Bucket | S3 (Simple Storage Solution) bucket for the lambda functions. Private access only |
 | AWS Dynamodb Database | the database (NoSQL) holding users' data |
 
 ### Why this architecture?
@@ -72,20 +75,22 @@ common security and safety features (e.g. OAuth 2 paths) are to be included. Cog
 | frontend | the source code for the React web-site |
 | terraforn | the scripts for building the AWS infrastructure |
 
-## How does it all hang together?
+## Files used in Terraform?
 
 The ```Terraform``` folder contains 4 terraform scripts 
 
 | Script Name | What does it do |
 | --------------- | ----------------- |
-| main.tf | "entry" terraform script that defines the provider, database, Cognito user pool and API Gateway |
-| lambdas.tf | resources relating to the 5 lambda functions needed |
-| s3buckets.tf | defines the publicly readable S3 bucket for the website and the private S3 bucket for the lambda functions |
+| main.tf | "entry" terraform script that defines the cloud provider |
+| lambdas.tf | resources relating to the 6 lambda functions needed |
+| s3_lambdabucket.tf | defines the private S3 bucket for the lambda functions |
+| s3_media_bucket.tf | defines the private S3 bucket used to store media files for users |
+| s3_webapp_bucket.tf | defines the public S3 bucket for the web application |
+| dynamodb.tf | defines the Dynamo database used by the application |
+| cognito.tf | defines the AWS Cognito user pool and user pool client used for authenticating/signing up users |
+| api_gateway.tf | defines the API Gateway component and its permissions to use the corresponding lambda functions | 
 | variables.tf | common names/variables used by the other scripts |
-| outputs.tf | captures the IDs of the Cognito user pool and user pool client |
+| outputs.tf | captures the IDs of the Cognito user pool and user pool client. In addition it captures 3 variables that we will use in the React app |
 | assume_role_policy.json | AWS role policy for the use of lambda functions |
 | dynamodb_watch_policy.json | Policy for the use of the DynamoDB database and logging functions |
-| build_infrastructure.sh | a `zsh` script for an end to end creation of all components and output files with Terraform | 
-
-
 

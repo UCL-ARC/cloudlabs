@@ -37,8 +37,9 @@ You will also see any lint errors in the console.
 ---
 
 ## Building the project for production
+Use the following command in your shell script or terminal. 
 
-```shell script
+```
 npm run build
 ```
 
@@ -48,14 +49,28 @@ It correctly bundles React in production mode and optimizes the build for the be
 The build is minified and the filenames include the hashes.<br />
 Your app is ready to be deployed!
 
+## Deploying the project to the S3 bucket
+Do this ***AFTER*** you created the AWS infrastructure with Terraform
+Use the following command line 
+```
+npm run deploy
+```
+This will upload the code from the build directory to the AWS S3 bucket ```s3-serverless-app-example.com``` 
 ---
-
-### Hosting
-
-The `build` folder can be deployed to your hosting provider of choice (e.g. GitHub pages, AWS etc.)
 
 ---
 
 ### Environment variables
+React has the ability to use system and environment variables. These need to be defined with names starting
+```
+REACT_APP_
+```
+When the React app is built, the ENV variables will be set to their respective values. 
 
-Make a `.env` and `.env.production` file in the `/frontend` directory. Copy the values from `.env.example` into these files, make sure to populate these with your appropriate variable values.
+The environment variables used in the React App are being set in the 
+```
+.env
+```
+file in the root directory of the ```serverless-app```
+
+

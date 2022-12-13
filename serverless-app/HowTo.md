@@ -1,14 +1,14 @@
-# How to run this example
+# How to run this example - 4 Steps
 This assumes you followed the initial set up steps in the [Introduction](../Introduction.md)
 (None of the below will work if you haven't)
 
-# Before you start - Get the Code from this repo
+## Before you start - Get the Code from this repo
 - Clone this repository, or download it as a ZIP file.
 - Open a command line terminal and go to the cloned/downloaded ```cloudlabs``` directory
 - go into the folder ```serverless-app```
 
 # Step 1 - Set Environment Variable for Terraform
-The name for the DynamoDB database and the media/image S3 bucket are used by the JavaScript lambda functions and need to be set *** before *** you build the infrastructure.
+The name for the example DynamoDB database and the example media/image S3 bucket are used by the JavaScript lambda functions and need to be set *** before *** you build the infrastructure.
 
 ## Setting the Environment Variables on a Mac using ZSH or BASH shells
 
@@ -42,11 +42,19 @@ Some of the values created with Terraform are needed for the React Web app.
 - open the ```.env``` file in the ```serverless-app``` folder (one level up) and copy the values of the 3 REACT_APP_ named variables from the JSON file to the ```.env``` file. Save and exit
 - run ```source setenv.sh``` again
 
-# Step 4 - Build the React Web App
-- in your terminal go to the folder ```frontend``` (child folder of ```serverless-app```)
-- in there type in the following command: ```npm run build```
 
-This will create a ```build``` directory in your ```frontend``` folder.
+# Step 4 - Build Upload the React Web App to AWS
+The final step is to build and upload the app to the newly created S3 bucket.
+(See also the [README](./frontend/README.md) file)
 
-# Step 5 - Upload the React Web App to AWS
+The React example web app is in the folder ```frontend```.
+
+- open the ```package.json``` file
+   - in the section starting with ```scripts``` there is a line for ```deploy```. Insert the name of your S3 bucket for the Web app. This MUST match the name set for the ```TF_VAR_s3_web_bucket_name``` variable in your ```.env``` file.  
+- From the command line type in ```npm run build``` . This will build the React app from the sources and store the product in a ```build``` folder
+- From the command line run ```npm run deploy``` to deploy the app to the AWS S3 bucket  
+
+
+
+
 
