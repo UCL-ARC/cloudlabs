@@ -55,6 +55,13 @@ The React example web app is in the folder ```frontend```.
 - From the command line run ```npm run deploy``` to deploy the app to the AWS S3 bucket  
 
 
+# FINALLY
+How do I access the web-site?
+
+```http://<YOUR-WEB-BUCKET-NAME>.s3-website.eu-west-2.amazonaws.com```
+
+NOTE: HTTPS services are not available. For that we would need to use another AWS component called CloudFront.
+(there will be a later example for that)
 
 
 

@@ -17,8 +17,3 @@ output "REACT_APP_S3_BUCKET" {
     description = "S3 Static Web App Bucket"
     value = aws_s3_bucket.serverless_app_website.bucket
 }
-
-output "REACT_APP_URI" {
-    description = "S3 Static Web App Endpoint"
-    value = aws_s3_bucket.serverless_app_website.website
-}
