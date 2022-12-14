@@ -4,7 +4,7 @@ const { v4: uuidv4 } = require("uuid");
 const dynamoClient = new aws.DynamoDB.DocumentClient({
     region: process.env.AWS_REGION,
 });
-const tableName = process.env.TF_VAL_dynamodb_name;
+const tableName = process.env.TF_VAR_dynamodb_name;
 
 exports.handler = async (event, context) => {
     const username = event.pathParameters.username;

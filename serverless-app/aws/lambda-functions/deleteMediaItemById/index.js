@@ -5,10 +5,10 @@ aws.config.update({ region: process.env.AWS_REGION });
 const dynamoClient = new aws.DynamoDB.DocumentClient({
     region: process.env.AWS_REGION,
 });
-const tableName = process.env.TF_VAL_dynamodb_name;
+const tableName = process.env.TF_VAR_dynamodb_name;
 
 const s3 = new aws.S3();
-const s3Bucket = process.env.TF_VAL_s3_media_bucket_name;
+const s3Bucket = process.env.TF_VAR_s3_media_bucket_name;
 
 const deleteMediaItemFromDb = async (username, mediaItemId) => {
     const params = {
