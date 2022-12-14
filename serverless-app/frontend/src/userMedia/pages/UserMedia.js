@@ -21,7 +21,7 @@ const UserMedia = () => {
             // instead, you could intercept the auth token in lambda and extract the username there
             try {
                 const responseData = await sendRequest(
-                    `${process.env.REACT_APP_BACKEND_URL}/media/${username}`,
+                    `${process.env.REACT_APP_API_ENDPOINT}/media/${username}`,
                     "GET",
                     null,
                     {
