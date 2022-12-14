@@ -1,6 +1,6 @@
 const aws = require("aws-sdk");
 
-aws.config.update({ region: process.env.TF_VAL_aws_region });
+aws.config.update({ region: process.env.AWS_REGION });
 const s3 = new aws.S3();
 
 const s3Bucket = process.env.TF_VAL_s3_media_bucket_name;
