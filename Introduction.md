@@ -42,7 +42,7 @@ Summary:
 - set permissions: make sure that at least someone has 'AdministratorAccess' 
 - the rest can be default
 
-*** Note ***: You will be given an access key and secret key. It is RECOMMENDED to download the key pair as CSV file on your computer. You will need both keys later. AWS will NOT allow you to look at both keys again once you leave this setup page!
+**Note**: You will be given an access key and secret key. It is RECOMMENDED to download the key pair as CSV file on your computer. You will need both keys later. AWS will NOT allow you to look at both keys again once you leave this setup page!
 
 (If you lost your keys or forgot to save them you will need to create a new pair and deactivate the current ones)
 
@@ -69,7 +69,7 @@ You will need to update your PATH variable on UNIX (Linux, Mac OSX etc) and the 
 ```terraform```
 from the command line.
 
-*** Note *** Terraform comes as a single binary or executable. It is to be run from the command line. 
+**Note** Terraform comes as a single binary or executable. It is to be run from the command line. 
 
 
 
