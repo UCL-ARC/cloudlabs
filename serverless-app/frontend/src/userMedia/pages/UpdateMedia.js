@@ -42,12 +42,12 @@ const UpdateMedia = () => {
         const fetchSingleMedia = async () => {
             try {
                 // const responseData = await sendRequest(
-                //     `${process.env.REACT_APP_BACKEND_URL}/media/${username}/${mediaId}`
+                //     `${process.env.REACT_APP_API_ENDPOINT}/media/${username}/${mediaId}`
                 // );
 
                 // authorizing the GET request makes sure users can only access their own media and no one elses
                 const responseData = await sendRequest(
-                    `${process.env.REACT_APP_BACKEND_URL}/media/${username}/${mediaId}`,
+                    `${process.env.REACT_APP_API_ENDPOINT}/media/${username}/${mediaId}`,
                     "GET",
                     null,
                     {
@@ -78,7 +78,7 @@ const UpdateMedia = () => {
         event.preventDefault();
         try {
             await sendRequest(
-                `${process.env.REACT_APP_BACKEND_URL}/media/${username}/${mediaId}`,
+                `${process.env.REACT_APP_API_ENDPOINT}/media/${username}/${mediaId}`,
                 "PATCH",
                 JSON.stringify({
                     title: formState.inputs.title.value,

@@ -8,7 +8,7 @@ output "REACT_APP_COGNITO_CLIENT_ID" {
     value = aws_cognito_user_pool_client.example_ucl_user_pool_client.id
 }
 
-output "REACT_APP_BACKEND_URL" {
+output "REACT_APP_API_ENDPOINT" {
     description = "AWS API Endpoint"
     value = aws_apigatewayv2_api.serverless_gateway.api_endpoint
 }

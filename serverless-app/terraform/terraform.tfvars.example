@@ -1,0 +1,3 @@
+s3_media_bucket_name = "<NAME OF YOUR S3 MEDIA BUCKET>"
+dynamodb_name = "<YOUR DYNAMODB TABLE NAME>"
+s3_web_bucket_name = "<NAME OF YOUR S3 WEB APP BUCKET>" 
