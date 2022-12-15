@@ -5,7 +5,7 @@ The web app is built on the React framework
 
 ## Requirements
 - You need to have completed ALL of the steps listed in the [Introduction](../Introduction.md)
-- You will need to have [React](https://reactjs.org) and other components [NodeJS](https://nodejs.org/en/) installed
+- In addition you will need to have [React](https://reactjs.org) and [NodeJS](https://nodejs.org/en/) installed
 
 # Web App Use Case
 
@@ -16,8 +16,8 @@ A common use case for web applications in research is to provide a service that 
 
 For this reason, we created an example app with the following features:
 - users to sign-up/log-in to the web app
-- create, read, update and delete images
-- view the images they have stored centrally.
+- create, read, update and delete images via the web app and store them in a database on AWS
+- view their images in the web app
 
 ## What to do with this example
 
