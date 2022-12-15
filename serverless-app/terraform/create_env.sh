@@ -1,3 +1,6 @@
 #!/bin/zsh
 
-terraform output -json > ./reactvariables.json
+terraform output | tr -d ' ' > terraform.env
+cp terraform.env ../frontend/.env
+rm terraform.env
+
