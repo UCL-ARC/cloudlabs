@@ -52,12 +52,9 @@ resource "aws_s3_bucket_acl" "lambda_bucket_acl" {
   acl    = "private"
 }
 
-resource "aws_s2_bucket_public_access_block" "s3_public_access" {
+resource "aws_s3_bucket_public_access_block" "s3_public_access_lambda" {
   bucket = aws_s3_bucket.lambda_bucket_for_serverless_app.id
   block_public_acls = true
-  block_public_policy     = true
-  ignore_public_acls      = true
-  restrict_public_buckets = true
 }
 
 
