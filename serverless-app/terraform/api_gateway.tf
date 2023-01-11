@@ -9,7 +9,44 @@ resource "aws_apigatewayv2_api" "serverless_gateway" {
   name          = "example_serverless_lambda_gateway"
   description   = "An example API Gateway for serverless backend"
   protocol_type = "HTTP"
+  cors_configuration {
+    allow_origins = ["*"]
+    allow_headers = ["Content-Type","Authorization", "Origin", "Accept", "X-Requested-With"]
+    allow_methods = ["GET","POST","OPTIONS","PATCH","PUT","DELETE"]
+  }
 }
+
+
+resource "aws_apigatewayv2_stage" "dev"{
+  api_id = aws_apigatewayv2_api.serverless_gateway.id
+  name = var.environments
+}
+
+resource "aws_apigatewayv2_deployment" "dev_deployment"{
+  api_id = aws_apigatewayv2_api.serverless_gateway.id
+  description = "Test Dev deployment"
+  triggers = {
+    redeployment = sha1(join(",", tolist([
+      jsonencode(aws_apigatewayv2_integration.int_createmedialambdas),
+      jsonencode(aws_apigatewayv2_route.createmedia_authorization),
+      jsonencode(aws_apigatewayv2_integration.int_deletemedialambdas),
+      jsonencode(aws_apigatewayv2_route.deletemedia_authorization),
+      jsonencode(aws_apigatewayv2_integration.int_getmediabyuserlambdas),
+      jsonencode(aws_apigatewayv2_route.getmediabyuser_authorization),
+      jsonencode(aws_apigatewayv2_integration.int_getmediabyidlambdas),
+      jsonencode(aws_apigatewayv2_route.getmediabyid_authorization),
+      jsonencode(aws_apigatewayv2_integration.int_updatemedialambdas),
+      jsonencode(aws_apigatewayv2_route.updatemedia_authorization),
+      jsonencode(aws_apigatewayv2_integration.int_getpresignedurllambdas),
+      jsonencode(aws_apigatewayv2_route.getpresignedurl_authorization)
+    ])))
+  }
+
+  lifecycle {
+    create_before_destroy = true
+  }
+}
+
 
 ### USING COGNITO AS AN API GATEWAY AUTHORISER
 resource "aws_apigatewayv2_authorizer" "example_jwt_authorizer" {
@@ -192,4 +229,6 @@ resource "aws_apigatewayv2_route" "getpresignedurl_authorization" {
   route_key          = "POST /getPresignedUrl"
   target             = "integrations/${aws_apigatewayv2_integration.int_getpresignedurllambdas.id}"
 }
+
+
 

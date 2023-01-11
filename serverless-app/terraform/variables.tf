@@ -24,3 +24,8 @@ variable "local_lambda_source" {
   type = string
   default = "../aws/lambda-functions"
 }
+
+variable "environments" {
+  type = string
+  default = "dev"
+}

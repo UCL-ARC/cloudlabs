@@ -35,7 +35,7 @@ However, you should realise that this is not production ready code
 ### Limitations
 
 - are lambda functions the best choice for my application? It is worthwhile reading through the documentation [https://aws.amazon.com/lambda/] . E.g. lambda functions need time to "ramp" up. In short, it may take some time before the function actually executes. In part, this can be mitigated with configuring lambda functions (caches, etc). Or by choosing a different architecture (e.g. EC2 instances)
-- Cognito is generally a useful service to handle authorisation and authentication. At UCL many services, however, run a mixed environment, whereby some users are UCL staff members and others are not. Some are researchers (UCL/non-UCL) with access to different functions than others. The configuration of Cognito will therefore be different to the simple example given here. You may also end up using 2 separate authorisation/authentication systems -> one for staff and one for non-UCL members.
+- Cognito is generally a useful service to handle authorisation and authentication. At UCL many services, however, run a mixed environment, whereby some users are UCL staff members and others are not. Some are researchers (UCL/non-UCL) who might need access to different functions than other users. The configuration of Cognito will therefore be different to the simple example given here. You may also end up using 2 separate authorisation/authentication systems -> one for staff and one for non-UCL members.
 - this app is very basic in the following sense:
    - there is no backup facility included. This would be necessary for an application holding user data. 
    - the app is running from a single availability zone. 

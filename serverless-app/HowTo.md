@@ -34,7 +34,7 @@ terraform plan
 terraform apply
 ```
 
-When doing ```terraform apply``` you will be prompted to type in ```yes``` to proceed.
+When doing ```terraform apply``` (or ```terraform plan```) you will be prompted to type in ```yes``` to proceed.
 
 At the end of the last step you should see a message saying
 ```Apply complete! Resources: 47 added, 0 changed, 0 destroyed.```
