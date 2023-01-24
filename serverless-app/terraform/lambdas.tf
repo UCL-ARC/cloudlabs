@@ -59,6 +59,21 @@ resource "aws_iam_role_policy_attachment" "lambda_dynamodb_policy" {
   policy_arn = "${aws_iam_policy.lambda_policy.arn}"
 }
 
+resource "aws_iam_policy" "lambda_presigned_s3_policy" {
+  name = "lambda_policy_for_s3_presignedurl"
+  policy = file("s3_presignedurl_policy.json")
+}
+
+resource "aws_iam_role" "lambda_presigned" {
+  name = "presigned_lambda_s3"
+  assume_role_policy = file("assume_role_policy.json")
+}
+
+resource "aws_iam_role_policy_attachement" "lambda_s3_presigned_attachment" {
+  role = aws_iam_role.lambda_presigned.name
+  policy_arn = "${aws_iam_policy.lambda_presigned_s3_policy.arn}"
+}
+
 
 
 ### DEFINE THE LAMBDA FUNCTIONS
@@ -151,14 +166,14 @@ resource "aws_lambda_function" "updateMediaItem_lambda" {
 
 # define the lambda function to handle pre-signed URLs - needed to access the media in the separate S3 bucket
 
-resource "aws_lambda_function" "getPresignedUrl_lambda" {
+resource "aws_lambda_function" "preSignedUrl_lambda" {
   function_name    = "preSignedUrl"
   s3_bucket        = aws_s3_bucket.lambda_bucket_for_serverless_app.id
   s3_key           = aws_s3_object.serverless_presigned_object.key
   runtime          = "nodejs12.x"
   handler          = "index.handler"
   source_code_hash = data.archive_file.updateMediaItem_data.output_base64sha256
-  role             = aws_iam_role.lambda_exec.arn
+  role             = aws_iam_role.lambda_presigned.arn
   environment {
     variables = {
       TF_VAR_dynamodb_name = var.dynamodb_name

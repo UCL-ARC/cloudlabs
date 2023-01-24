@@ -13,9 +13,12 @@ resource "aws_s3_bucket_acl" "webapp_media_bucket" {
   acl = "private"
 }
 
+### Turns out that setting acl = "private" in aws_s3_bucket_acl is not enough. 
+### Need to add this otherwise the bucket has public acccess
 resource "aws_s3_bucket_public_access_block" "s3_public_access_media" {
   bucket = aws_s3_bucket.media_for_serverless_app.id
   block_public_acls = true
+  restrict_public_buckets = true
 }
 
 resource "aws_s3_bucket_policy" "serverless_app_media_policy" {

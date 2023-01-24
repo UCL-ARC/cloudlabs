@@ -37,8 +37,8 @@ resource "aws_apigatewayv2_deployment" "dev_deployment"{
       jsonencode(aws_apigatewayv2_route.getmediabyid_authorization),
       jsonencode(aws_apigatewayv2_integration.int_updatemedialambdas),
       jsonencode(aws_apigatewayv2_route.updatemedia_authorization),
-      jsonencode(aws_apigatewayv2_integration.int_getpresignedurllambdas),
-      jsonencode(aws_apigatewayv2_route.getpresignedurl_authorization)
+      jsonencode(aws_apigatewayv2_integration.int_presignedurllambdas),
+      jsonencode(aws_apigatewayv2_route.presignedurl_authorization)
     ])))
   }
 
@@ -110,8 +110,8 @@ resource "aws_lambda_permission" "api_gateway_updatemedia_permission" {
 
 # PresignedUrl
 resource "aws_lambda_permission" "api_gateway_presignedurl_permission" {
-  statement_id  = "AllowGetPresignedURL"
-  function_name = aws_lambda_function.getPresignedUrl_lambda.function_name
+  statement_id  = "AllowPresignedURL"
+  function_name = aws_lambda_function.preSignedUrl_lambda.function_name
   action        = "lambda:InvokeFunction"
   principal     = "apigateway.amazonaws.com"
   source_arn = "${aws_apigatewayv2_api.serverless_gateway.execution_arn}/*/*/*"
@@ -213,21 +213,21 @@ resource "aws_apigatewayv2_route" "updatemedia_authorization" {
 }
 
 # Presigned URL
-resource "aws_apigatewayv2_integration" "int_getpresignedurllambdas" {
+resource "aws_apigatewayv2_integration" "int_presignedurllambdas" {
   api_id                 = aws_apigatewayv2_api.serverless_gateway.id
   integration_type       = "AWS_PROXY"
   connection_type        = "INTERNET"
   integration_method     = "POST"
   payload_format_version = "2.0"
-  integration_uri        = aws_lambda_function.getPresignedUrl_lambda.invoke_arn
+  integration_uri        = aws_lambda_function.preSignedUrl_lambda.invoke_arn
 }
 
-resource "aws_apigatewayv2_route" "getpresignedurl_authorization" {
+resource "aws_apigatewayv2_route" "presignedurl_authorization" {
   api_id             = aws_apigatewayv2_api.serverless_gateway.id
   authorization_type = "JWT"
   authorizer_id      = aws_apigatewayv2_authorizer.example_jwt_authorizer.id
-  route_key          = "POST /getPresignedUrl"
-  target             = "integrations/${aws_apigatewayv2_integration.int_getpresignedurllambdas.id}"
+  route_key          = "POST /preSignedUrl"
+  target             = "integrations/${aws_apigatewayv2_integration.int_presignedurllambdas.id}"
 }
 
 

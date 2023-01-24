@@ -67,7 +67,7 @@ const NewMedia = () => {
 
         // get a presigned url from aws
         const responseData = await sendRequest(
-            `${process.env.REACT_APP_API_ENDPOINT}/getPresignedUrl`,
+            `${process.env.REACT_APP_API_ENDPOINT}/preSignedUrl`,
             "POST",
             JSON.stringify({
                 filename: newFileName,

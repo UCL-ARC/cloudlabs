@@ -34,7 +34,7 @@ const getAllMediaItemsByUserId = async (username) => {
 };
 
 // requests temporary presigned urls to give access to private files in S3
-const getPresignedUrl = async (filename) => {
+const preSignedUrl = async (filename) => {
     if (!filename) return;
 
     var params = {
@@ -71,7 +71,7 @@ exports.handler = async (event, context) => {
         userMedia.Items.map(async (mediaItem) => {
             return {
                 ...mediaItem,
-                presignedUrl: await getPresignedUrl(mediaItem.S3Filename),
+                presignedUrl: await preSignedUrl(mediaItem.S3Filename),
             };
         })
     );
