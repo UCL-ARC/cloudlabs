@@ -13,6 +13,7 @@ const UserMedia = () => {
     const { isLoading, error, sendRequest, clearError } = useHttpClient();
 
     const username = useParams().username;
+    console.log("User Name: ", username);
 
     useEffect(() => {
         const fetchMedia = async () => {

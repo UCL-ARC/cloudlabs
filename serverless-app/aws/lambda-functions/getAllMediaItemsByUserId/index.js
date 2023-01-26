@@ -5,6 +5,8 @@ const dynamoClient = new aws.DynamoDB.DocumentClient({
 });
 const tableName = process.env.TF_VAR_dynamodb_name;
 
+console.log(tableName);
+
 const s3 = new aws.S3();
 const s3Bucket = process.env.TF_VAR_s3_media_bucket_name;
 
@@ -50,8 +52,7 @@ const preSignedUrl = async (filename) => {
 };
 
 exports.handler = async (event, context) => {
-    const username = event.pathParameters.username;
-
+    console.log("USERNAME ",username);
     let userMedia;
     try {
         userMedia = await getAllMediaItemsByUserId(username);
@@ -64,7 +65,7 @@ exports.handler = async (event, context) => {
         };
         return response;
     }
-
+    console.log("Got the data out of the DynamoDB table");
     // get presigned urls for every media item so that private files can be temporarily shared
     // for more info, look up AWS presigned urls
     const itemsWithPresignedUrls = await Promise.all(

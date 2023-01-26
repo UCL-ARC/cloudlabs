@@ -42,21 +42,21 @@ The policy document
 # Define the general policy/permissions for lambda functions
 # This is restricted to DynamoDB only for now
 
-resource "aws_iam_policy" "lambda_policy" {
+resource "aws_iam_policy" "lambda_dynamodb_policy" {
   name = "lambda_policy_for_cloudwatch_dynamodb"
   policy = file("dynamodb_watch_policy.json")
 }
 
 # Define the role lambda functions will assume when executing
-resource "aws_iam_role" "lambda_exec" {
+resource "aws_iam_role" "lambda_exec_role" {
   name = "serverless_lambda"
   assume_role_policy = file("assume_role_policy.json")
 }
 
 # Tie role and policy together
-resource "aws_iam_role_policy_attachment" "lambda_dynamodb_policy" {
-  role       = aws_iam_role.lambda_exec.name
-  policy_arn = "${aws_iam_policy.lambda_policy.arn}"
+resource "aws_iam_role_policy_attachment" "lambda_dynamodb_attachment" {
+  role       = aws_iam_role.lambda_exec_role.name
+  policy_arn = "${aws_iam_policy.lambda_dynamodb_policy.arn}"
 }
 
 resource "aws_iam_policy" "lambda_presigned_s3_policy" {
@@ -64,13 +64,13 @@ resource "aws_iam_policy" "lambda_presigned_s3_policy" {
   policy = file("s3_presignedurl_policy.json")
 }
 
-resource "aws_iam_role" "lambda_presigned" {
+resource "aws_iam_role" "lambda_presigned_role" {
   name = "presigned_lambda_s3"
   assume_role_policy = file("assume_role_policy.json")
 }
 
-resource "aws_iam_role_policy_attachement" "lambda_s3_presigned_attachment" {
-  role = aws_iam_role.lambda_presigned.name
+resource "aws_iam_role_policy_attachment" "lambda_s3_presigned_attachment" {
+  role = aws_iam_role.lambda_presigned_role.name
   policy_arn = "${aws_iam_policy.lambda_presigned_s3_policy.arn}"
 }
 
@@ -87,7 +87,7 @@ resource "aws_lambda_function" "createMediaItem_lambda" {
   runtime          = "nodejs12.x"
   handler          = "index.handler"
   source_code_hash = data.archive_file.createMediaItem_data.output_base64sha256
-  role             = aws_iam_role.lambda_exec.arn
+  role             = aws_iam_role.lambda_exec_role.arn
   environment {
     variables = {
       TF_VAR_dynamodb_name = var.dynamodb_name
@@ -104,7 +104,7 @@ resource "aws_lambda_function" "deleteMediaItemById_lambda" {
   runtime          = "nodejs12.x"
   handler          = "index.handler"
   source_code_hash = data.archive_file.deleteMediaItemById_data.output_base64sha256
-  role             = aws_iam_role.lambda_exec.arn
+  role             = aws_iam_role.lambda_exec_role.arn
   environment {
     variables = {
       TF_VAR_dynamodb_name = var.dynamodb_name
@@ -121,7 +121,7 @@ resource "aws_lambda_function" "getAllMediaItemsByUserId_lambda" {
   runtime          = "nodejs12.x"
   handler          = "index.handler"
   source_code_hash = data.archive_file.getAllMediaItemsByUserId_data.output_base64sha256
-  role             = aws_iam_role.lambda_exec.arn
+  role             = aws_iam_role.lambda_exec_role.arn
   environment {
     variables = {
       TF_VAR_dynamodb_name = var.dynamodb_name
@@ -138,7 +138,7 @@ resource "aws_lambda_function" "getMediaItemById_lambda" {
   runtime          = "nodejs12.x"
   handler          = "index.handler"
   source_code_hash = data.archive_file.getMediaItemById_data.output_base64sha256
-  role             = aws_iam_role.lambda_exec.arn
+  role             = aws_iam_role.lambda_exec_role.arn
   environment {
     variables = {
       TF_VAR_dynamodb_name = var.dynamodb_name
@@ -155,7 +155,7 @@ resource "aws_lambda_function" "updateMediaItem_lambda" {
   runtime          = "nodejs12.x"
   handler          = "index.handler"
   source_code_hash = data.archive_file.updateMediaItem_data.output_base64sha256
-  role             = aws_iam_role.lambda_exec.arn
+  role             = aws_iam_role.lambda_exec_role.arn
   environment {
     variables = {
       TF_VAR_dynamodb_name = var.dynamodb_name
@@ -173,7 +173,7 @@ resource "aws_lambda_function" "preSignedUrl_lambda" {
   runtime          = "nodejs12.x"
   handler          = "index.handler"
   source_code_hash = data.archive_file.updateMediaItem_data.output_base64sha256
-  role             = aws_iam_role.lambda_presigned.arn
+  role             = aws_iam_role.lambda_presigned_role.arn
   environment {
     variables = {
       TF_VAR_dynamodb_name = var.dynamodb_name

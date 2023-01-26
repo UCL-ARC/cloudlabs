@@ -25,28 +25,25 @@ resource "aws_apigatewayv2_stage" "dev"{
 resource "aws_apigatewayv2_deployment" "dev_deployment"{
   api_id = aws_apigatewayv2_api.serverless_gateway.id
   description = "Test Dev deployment"
-  triggers = {
-    redeployment = sha1(join(",", tolist([
-      jsonencode(aws_apigatewayv2_integration.int_createmedialambdas),
-      jsonencode(aws_apigatewayv2_route.createmedia_authorization),
-      jsonencode(aws_apigatewayv2_integration.int_deletemedialambdas),
-      jsonencode(aws_apigatewayv2_route.deletemedia_authorization),
-      jsonencode(aws_apigatewayv2_integration.int_getmediabyuserlambdas),
-      jsonencode(aws_apigatewayv2_route.getmediabyuser_authorization),
-      jsonencode(aws_apigatewayv2_integration.int_getmediabyidlambdas),
-      jsonencode(aws_apigatewayv2_route.getmediabyid_authorization),
-      jsonencode(aws_apigatewayv2_integration.int_updatemedialambdas),
-      jsonencode(aws_apigatewayv2_route.updatemedia_authorization),
-      jsonencode(aws_apigatewayv2_integration.int_presignedurllambdas),
-      jsonencode(aws_apigatewayv2_route.presignedurl_authorization)
-    ])))
-  }
+  depends_on = [
+    aws_apigatewayv2_integration.int_createmedialambdas,
+    aws_apigatewayv2_integration.int_deletemedialambdas,
+    aws_apigatewayv2_integration.int_getmediabyidlambdas,
+    aws_apigatewayv2_integration.int_getmediabyuserlambdas,
+    aws_apigatewayv2_integration.int_presignedurllambdas,
+    aws_apigatewayv2_integration.int_updatemedialambdas,
+    aws_apigatewayv2_route.createmedia_authorization,
+    aws_apigatewayv2_route.deletemedia_authorization,
+    aws_apigatewayv2_route.getmediabyid_authorization,
+    aws_apigatewayv2_route.getmediabyuser_authorization,
+    aws_apigatewayv2_route.presignedurl_authorization,
+    aws_apigatewayv2_route.updatemedia_authorization
+  ]
 
   lifecycle {
     create_before_destroy = true
   }
 }
-
 
 ### USING COGNITO AS AN API GATEWAY AUTHORISER
 resource "aws_apigatewayv2_authorizer" "example_jwt_authorizer" {
