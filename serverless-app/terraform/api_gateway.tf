@@ -10,49 +10,53 @@ resource "aws_apigatewayv2_api" "serverless_gateway" {
   description   = "An example API Gateway for serverless backend"
   protocol_type = "HTTP"
   cors_configuration {
+    allow_credentials = false
     allow_origins = ["*"]
     allow_headers = ["Content-Type","Authorization", "Origin", "Accept", "X-Requested-With"]
     allow_methods = ["GET","POST","OPTIONS","PATCH","PUT","DELETE"]
+    expose_headers = []
+    max_age = 300
   }
 }
 
-
-resource "aws_apigatewayv2_stage" "dev"{
+###
+resource "aws_apigatewayv2_stage" "default"{
   api_id = aws_apigatewayv2_api.serverless_gateway.id
-  name = var.environments
+  name = "$default"
+  auto_deploy = true
 }
 
-resource "aws_apigatewayv2_deployment" "dev_deployment"{
-  api_id = aws_apigatewayv2_api.serverless_gateway.id
-  description = "Test Dev deployment"
-  depends_on = [
-    aws_apigatewayv2_integration.int_createmedialambdas,
-    aws_apigatewayv2_integration.int_deletemedialambdas,
-    aws_apigatewayv2_integration.int_getmediabyidlambdas,
-    aws_apigatewayv2_integration.int_getmediabyuserlambdas,
-    aws_apigatewayv2_integration.int_presignedurllambdas,
-    aws_apigatewayv2_integration.int_updatemedialambdas,
-    aws_apigatewayv2_route.createmedia_authorization,
-    aws_apigatewayv2_route.deletemedia_authorization,
-    aws_apigatewayv2_route.getmediabyid_authorization,
-    aws_apigatewayv2_route.getmediabyuser_authorization,
-    aws_apigatewayv2_route.presignedurl_authorization,
-    aws_apigatewayv2_route.updatemedia_authorization
-  ]
-
-  lifecycle {
-    create_before_destroy = true
-  }
-}
+#resource "aws_apigatewayv2_deployment" "dev_deployment"{
+#  api_id = aws_apigatewayv2_api.serverless_gateway.id
+#  description = "Test Dev deployment"
+#  depends_on = [
+#    aws_apigatewayv2_integration.int_createmedialambdas,
+#    aws_apigatewayv2_integration.int_deletemedialambdas,
+#    aws_apigatewayv2_integration.int_getmediabyidlambdas,
+#    aws_apigatewayv2_integration.int_getmediabyuserlambdas,
+#    aws_apigatewayv2_integration.int_presignedurllambdas,
+#    aws_apigatewayv2_integration.int_updatemedialambdas,
+#    aws_apigatewayv2_route.createmedia_authorization,
+#    aws_apigatewayv2_route.deletemedia_authorization,
+#    aws_apigatewayv2_route.getmediabyid_authorization,
+#    aws_apigatewayv2_route.getmediabyuser_authorization,
+#    aws_apigatewayv2_route.presignedurl_authorization,
+#    aws_apigatewayv2_route.updatemedia_authorization
+#  ]
+#
+#  lifecycle {
+#    create_before_destroy = true
+#  }
+#}
 
 ### USING COGNITO AS AN API GATEWAY AUTHORISER
 resource "aws_apigatewayv2_authorizer" "example_jwt_authorizer" {
   api_id                            = aws_apigatewayv2_api.serverless_gateway.id
   authorizer_type                   = "JWT"
   identity_sources                  = ["$request.header.Authorization"]
-  name                              = "cognito_authorizer"
+  name                              = "Cognito"
   jwt_configuration {
-    audience = [aws_cognito_user_pool.example_ucl_user_pool.id]
+    audience = [aws_cognito_user_pool_client.example_ucl_user_pool_client.id]
     issuer = "https://${aws_cognito_user_pool.example_ucl_user_pool.endpoint}"
   }
 }
@@ -133,7 +137,7 @@ resource "aws_apigatewayv2_route" "createmedia_authorization" {
   api_id             = aws_apigatewayv2_api.serverless_gateway.id
   authorization_type = "JWT"
   authorizer_id      = aws_apigatewayv2_authorizer.example_jwt_authorizer.id
-  route_key          = "POST /media"
+  route_key          = "POST /media/{username}/new"
   target             = "integrations/${aws_apigatewayv2_integration.int_createmedialambdas.id}"
 }
 

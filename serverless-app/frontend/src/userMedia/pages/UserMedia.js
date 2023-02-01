@@ -14,6 +14,8 @@ const UserMedia = () => {
 
     const username = useParams().username;
     console.log("User Name: ", username);
+    console.log("API endpoint, ", process.env.REACT_APP_API_ENDPOINT );
+    console.log("Authentication token ", auth.accessToken);
 
     useEffect(() => {
         const fetchMedia = async () => {
@@ -31,7 +33,7 @@ const UserMedia = () => {
                 );
 
                 setLoadedMedia(responseData);
-            } catch (err) {}
+            } catch (err) {console.log(err);}
         };
         fetchMedia();
     }, [sendRequest, username]);

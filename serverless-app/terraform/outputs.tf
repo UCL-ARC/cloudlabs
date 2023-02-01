@@ -17,3 +17,8 @@ output "REACT_APP_S3_BUCKET" {
     description = "S3 Static Web App Bucket"
     value = aws_s3_bucket.serverless_app_website.bucket
 }
+
+output "API_RESOURCE_ARN" {
+    description = "API Gateway Resource ARN"
+    value = aws_apigatewayv2_api.serverless_gateway.execution_arn
+}
