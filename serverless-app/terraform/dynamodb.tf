@@ -23,36 +23,3 @@ resource "aws_dynamodb_table" "user-media-table" {
     type = "S"
   }
 }
-
-#resource "aws_dynamodb_table" "user-places-table" {
-#  name           = var.dynamodb_name
-#  read_capacity  = 10
-##  billing_mode   = "PROVISIONED"
-#  write_capacity = 10
-#  hash_key       = "pk"
-#  range_key      = "sk"
-#
-#  attribute {
-#    name = "GSI1"
-#    type = "S"
-#  }
-#
-#  attribute {
-#    name = "pk"
-#    type = "S"
-#  }
-#  attribute {
-#    name = "sk"
-#    type = "S"
-#  }
-#
-#  global_secondary_index {
-#    name = "GSI1-pk-index"
-#    hash_key = "GSI1"
-#    range_key = "pk"
-#    projection_type = "INCLUDE"
-#    non_key_attributes = ["media", "username"]
-#    write_capacity = 10
-#    read_capacity = 10
-#  }
-#}
