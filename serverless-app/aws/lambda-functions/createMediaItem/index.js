@@ -32,18 +32,17 @@ exports.handler = async (event, context) => {
     const params = {
         TableName: tableName,
         Key: {
-            pk: username,
-            sk: "media." + uuidv4(),
+            "username": username,
+            "imagefile": "media." + uuidv4(),
         },
         UpdateExpression:
-            "set MediaTitle = :title, MediaDescription = :description, FileLocation = :fileLocation, FileType = :fileType, S3Filename = :s3Filename, GSI1 = :GSI1",
+            "set MediaTitle = :title, MediaDescription = :description, FileLocation = :fileLocation, FileType = :fileType, S3Filename = :s3Filename",
         ExpressionAttributeValues: {
             ":title": createdMediaItem.MediaTitle,
             ":description": createdMediaItem.MediaDescription,
             ":fileLocation": createdMediaItem.FileLocation,
             ":fileType": createdMediaItem.FileType,
             ":s3Filename": createdMediaItem.S3Filename,
-            ":GSI1": "media",
         },
     };
 

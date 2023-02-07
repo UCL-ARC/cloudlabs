@@ -25,14 +25,16 @@ export const useHttpClient = () => {
                 activeHttpRequests.current = activeHttpRequests.current.filter(
                     (reqCtrl) => reqCtrl !== httpAbortCtrl
                 );
-
+                console.log(responseData.message);
                 if (!response.ok) {
+                    console.log("error occurred!!!");
                     throw new Error(responseData.message);
                 }
 
                 setIsLoading(false);
                 return responseData;
             } catch (err) {
+                console.log("catching error**** "+err.message);
                 setError(err.message);
                 setIsLoading(false);
                 throw err;

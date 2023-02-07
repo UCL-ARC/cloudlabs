@@ -13,23 +13,25 @@ const s3Bucket = process.env.TF_VAR_s3_media_bucket_name;
 const getAllMediaItemsByUserId = async (username) => {
     const params = {
         TableName: tableName,
-        IndexName: "GSI1-pk-index",
-        KeyConditionExpression: "#pk = :pk and #sk = :sk",
-        ExpressionAttributeNames: {
-            "#pk": "GSI1",
-            "#sk": "pk",
-        },
+        KeyConditionExpression: "username = :userid",
         ExpressionAttributeValues: {
-            ":pk": "media",
-            ":sk": username,
-        },
+            ":userid": username
+        }
     };
 
     let userMedia;
     try {
         userMedia = await dynamoClient.query(params).promise();
     } catch (err) {
-        throw err;
+        const err_message = "Could not get the media " + err.message + " for user "+username; 
+        console.log("Error , err");
+        const response = {
+            statusCode: 500,
+            body: JSON.stringify({
+                message: err_message,
+            }),
+        };
+        return response;
     }
 
     return userMedia;
@@ -52,6 +54,7 @@ const preSignedUrl = async (filename) => {
 };
 
 exports.handler = async (event, context) => {
+    const username = event.pathParameters.username;
     console.log("USERNAME ",username);
     let userMedia;
     try {

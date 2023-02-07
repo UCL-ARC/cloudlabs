@@ -24,22 +24,6 @@ resource "aws_lambda_function" "createMediaItem_lambda" {
   }
 }
 
-# define the delete media lambda function
-resource "aws_lambda_function" "deleteMediaItemById_lambda" {
-  function_name    = "DeleteMediaItem"
-  s3_bucket        = aws_s3_bucket.lambda_bucket_for_serverless_app.id
-  s3_key           = aws_s3_object.serverless_delete_object.key
-  runtime          = "nodejs12.x"
-  handler          = "index.handler"
-  source_code_hash = data.archive_file.deleteMediaItemById_data.output_base64sha256
-  role             = aws_iam_role.lambda_exec_role.arn
-  environment {
-    variables = {
-      TF_VAR_dynamodb_name = var.dynamodb_name
-      TF_VAR_s3_media_bucket_name = var.s3_media_bucket_name
-    }
-  }
-}
 
 # define the get all media lambda function
 resource "aws_lambda_function" "getAllMediaItemsByUserId_lambda" {
@@ -58,40 +42,6 @@ resource "aws_lambda_function" "getAllMediaItemsByUserId_lambda" {
   }
 }
 
-# define the get media by id lambda function
-resource "aws_lambda_function" "getMediaItemById_lambda" {
-  function_name    = "GetMediaItemById"
-  s3_bucket        = aws_s3_bucket.lambda_bucket_for_serverless_app.id
-  s3_key           = aws_s3_object.serverless_getbyid_object.key
-  runtime          = "nodejs12.x"
-  handler          = "index.handler"
-  source_code_hash = data.archive_file.getMediaItemById_data.output_base64sha256
-  role             = aws_iam_role.lambda_exec_role.arn
-  environment {
-    variables = {
-      TF_VAR_dynamodb_name = var.dynamodb_name
-      TF_VAR_s3_media_bucket_name = var.s3_media_bucket_name
-    }
-  }
-}
-
-# define the delete media lambda function
-resource "aws_lambda_function" "updateMediaItem_lambda" {
-  function_name    = "UpdateMediaItem"
-  s3_bucket        = aws_s3_bucket.lambda_bucket_for_serverless_app.id
-  s3_key           = aws_s3_object.serverless_update_object.key
-  runtime          = "nodejs12.x"
-  handler          = "index.handler"
-  source_code_hash = data.archive_file.updateMediaItem_data.output_base64sha256
-  role             = aws_iam_role.lambda_exec_role.arn
-  environment {
-    variables = {
-      TF_VAR_dynamodb_name = var.dynamodb_name
-      TF_VAR_s3_media_bucket_name = var.s3_media_bucket_name
-    }
-  }
-}
-
 # define the lambda function to handle pre-signed URLs - needed to access the media in the separate S3 bucket
 
 resource "aws_lambda_function" "preSignedUrl_lambda" {
@@ -100,7 +50,7 @@ resource "aws_lambda_function" "preSignedUrl_lambda" {
   s3_key           = aws_s3_object.serverless_presigned_object.key
   runtime          = "nodejs12.x"
   handler          = "index.handler"
-  source_code_hash = data.archive_file.updateMediaItem_data.output_base64sha256
+  source_code_hash = data.archive_file.preSignedUrl_data.output_base64sha256
   role             = aws_iam_role.lambda_exec_role.arn
   environment {
     variables = {
@@ -110,5 +60,22 @@ resource "aws_lambda_function" "preSignedUrl_lambda" {
   }
 }
 
+##### <ADD A NEW LAMBDA FUNCTION>
+## THE VALUES FOR s3_key AND source_code_hash ARE DEFINED IN s3_lambdabucket.tf
 
+#resource "aws_lambda_function" "<TERRAFORM_NAME_OF_LAMBDA>" {
+#  function_name    = "<YOURNAME>"
+#  s3_bucket        = aws_s3_bucket.lambda_bucket_for_serverless_app.id
+#  s3_key           = aws_s3_object.<S3_OBJECT_NAME>.key
+#  runtime          = "nodejs12.x"
+#  handler          = "index.handler"
+#  source_code_hash = data.archive_file.<YOUR_NEW_LAMBDA_ARCHIVE_NAME>.output_base64sha256
+#  role             = aws_iam_role.lambda_exec_role.arn
+#  environment {
+#    variables = {
+#      TF_VAR_dynamodb_name = var.dynamodb_name
+#      TF_VAR_s3_media_bucket_name = var.s3_media_bucket_name
+#    }
+#  }
+#}
 
