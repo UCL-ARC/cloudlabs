@@ -5,36 +5,40 @@ const dynamoClient = new aws.DynamoDB.DocumentClient({
 });
 const tableName = process.env.TF_VAR_dynamodb_name;
 
+console.log(tableName);
+
 const s3 = new aws.S3();
 const s3Bucket = process.env.TF_VAR_s3_media_bucket_name;
 
 const getAllMediaItemsByUserId = async (username) => {
     const params = {
         TableName: tableName,
-        IndexName: "GSI1-pk-index",
-        KeyConditionExpression: "#pk = :pk and #sk = :sk",
-        ExpressionAttributeNames: {
-            "#pk": "GSI1",
-            "#sk": "pk",
-        },
+        KeyConditionExpression: "username = :userid",
         ExpressionAttributeValues: {
-            ":pk": "media",
-            ":sk": username,
-        },
+            ":userid": username
+        }
     };
 
     let userMedia;
     try {
         userMedia = await dynamoClient.query(params).promise();
     } catch (err) {
-        throw err;
+        const err_message = "Could not get the media " + err.message + " for user "+username; 
+        console.log("Error , err");
+        const response = {
+            statusCode: 500,
+            body: JSON.stringify({
+                message: err_message,
+            }),
+        };
+        return response;
     }
 
     return userMedia;
 };
 
 // requests temporary presigned urls to give access to private files in S3
-const getPresignedUrl = async (filename) => {
+const preSignedUrl = async (filename) => {
     if (!filename) return;
 
     var params = {
@@ -51,7 +55,7 @@ const getPresignedUrl = async (filename) => {
 
 exports.handler = async (event, context) => {
     const username = event.pathParameters.username;
-
+    console.log("USERNAME ",username);
     let userMedia;
     try {
         userMedia = await getAllMediaItemsByUserId(username);
@@ -64,14 +68,14 @@ exports.handler = async (event, context) => {
         };
         return response;
     }
-
+    console.log("Got the data out of the DynamoDB table");
     // get presigned urls for every media item so that private files can be temporarily shared
     // for more info, look up AWS presigned urls
     const itemsWithPresignedUrls = await Promise.all(
         userMedia.Items.map(async (mediaItem) => {
             return {
                 ...mediaItem,
-                presignedUrl: await getPresignedUrl(mediaItem.S3Filename),
+                presignedUrl: await preSignedUrl(mediaItem.S3Filename),
             };
         })
     );

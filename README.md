@@ -32,6 +32,7 @@ The examples should give you a good starting point for your own application.
 - [Serverless app](./serverless-app/)
 - [Docker swarm on EC2](./ec2-swarm/)
 
+
 # What this repository is NOT
 - The examples and use cases given here should work as is. However, you will still need some work to adapt it to your project. 
 - Automatic deployment and testing of components not directly related to AWS (e.g. uploading your web app to an S3 bucket, setting environment variables etc) is NOT shown here. CI/CD (Continuous Integration/Con. Deployment) are subjects in their own right and beyond the scope of this repository.   

@@ -41,7 +41,7 @@ const MediaItem = (props) => {
         // delete file from db and s3
         try {
             await sendRequest(
-                `${process.env.REACT_APP_BACKEND_URL}/media/${auth.username}/${mediaId}`,
+                `${process.env.REACT_APP_API_ENDPOINT}/media/${auth.username}/${mediaId}`,
                 "DELETE",
                 JSON.stringify({
                     s3Filename: s3Filename,

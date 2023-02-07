@@ -11,8 +11,11 @@ const UserMedia = () => {
     const auth = useContext(AuthContext);
     const [loadedMedia, setLoadedMedia] = useState();
     const { isLoading, error, sendRequest, clearError } = useHttpClient();
-
-    const username = useParams().username;
+    
+    const username = auth.username;
+    console.log("User Name: ", auth.username);
+    console.log("API endpoint, ", process.env.REACT_APP_API_ENDPOINT );
+    console.log("Authentication token ", auth.accessToken);
 
     useEffect(() => {
         const fetchMedia = async () => {
@@ -21,7 +24,7 @@ const UserMedia = () => {
             // instead, you could intercept the auth token in lambda and extract the username there
             try {
                 const responseData = await sendRequest(
-                    `${process.env.REACT_APP_BACKEND_URL}/media/${username}`,
+                    `${process.env.REACT_APP_API_ENDPOINT}/media/${auth.username}`,
                     "GET",
                     null,
                     {
@@ -30,10 +33,11 @@ const UserMedia = () => {
                 );
 
                 setLoadedMedia(responseData);
-            } catch (err) {}
+            } catch (err) {console.log(err);}
         };
         fetchMedia();
     }, [sendRequest, username]);
+    
 
     const mediaDeletedHandler = (deletedMediaId) => {
         setLoadedMedia((prevMedia) =>

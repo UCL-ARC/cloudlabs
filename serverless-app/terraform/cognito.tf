@@ -13,9 +13,13 @@
 ###   - email for account recovery
 ###   - email as attribute to recover
 
+### This was a torture to find out. Let's say you want a username and email for signin
+### you would need the alias_attributes key and NOT the user_attributes. The latter only supports phone number and email
+### 
+
 resource "aws_cognito_user_pool" "example_ucl_user_pool" {
   name = "example_ucl_user_pool"  
-  username_attributes = ["email"]
+  alias_attributes = ["email", "preferred_username"]
 
   admin_create_user_config {
     allow_admin_create_user_only = false

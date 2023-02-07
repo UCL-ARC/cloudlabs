@@ -6,34 +6,16 @@ data "archive_file" "createMediaItem_data" {
   output_path = "${path.module}/createMediaItem.zip"
 }
 
-data "archive_file" "deleteMediaItemById_data" {
-  type        = "zip"
-  source_dir  = "${var.local_lambda_source}/deleteMediaItemById"
-  output_path = "${path.module}/deleteMediaItemById.zip"
-}
-
 data "archive_file" "getAllMediaItemsByUserId_data" {
   type        = "zip"
   source_dir  = "${var.local_lambda_source}/getAllMediaItemsByUserId"
   output_path = "${path.module}/getAllMediaItemsByUserId.zip"
 }
 
-data "archive_file" "getMediaItemById_data" {
-  type        = "zip"
-  source_dir  = "${var.local_lambda_source}/getMediaItemById"
-  output_path = "${path.module}/getMediaItemById.zip"
-}
-
-data "archive_file" "updateMediaItem_data" {
-  type        = "zip"
-  source_dir  = "${var.local_lambda_source}/updateMediaItem"
-  output_path = "${path.module}/updateMediaItem.zip"
-}
-
-data "archive_file" "getPresignedUrl_data" {
+data "archive_file" "preSignedUrl_data" {
   type = "zip"
-  source_dir  = "${var.local_lambda_source}/getPresignedUrl"
-  output_path = "${path.module}/getPresignedUrl.zip"  
+  source_dir  = "${var.local_lambda_source}/preSignedUrl"
+  output_path = "${path.module}/preSignedUrl.zip"  
 }
 
 
@@ -52,6 +34,13 @@ resource "aws_s3_bucket_acl" "lambda_bucket_acl" {
   acl    = "private"
 }
 
+resource "aws_s3_bucket_public_access_block" "s3_public_access_lambda" {
+  bucket = aws_s3_bucket.lambda_bucket_for_serverless_app.id
+  block_public_acls = true
+  restrict_public_buckets = true
+}
+
+
 #S3 Objects - these are the Zip'd lambda functions
 #create media item
 resource "aws_s3_object" "serverless_create_object" {
@@ -59,14 +48,6 @@ resource "aws_s3_object" "serverless_create_object" {
   key    = "createMediaItem.zip"
   source = data.archive_file.createMediaItem_data.output_path
   etag   = filemd5(data.archive_file.createMediaItem_data.output_path)
-}
-
-#delete media item
-resource "aws_s3_object" "serverless_delete_object" {
-  bucket = aws_s3_bucket.lambda_bucket_for_serverless_app.id
-  key    = "deleteMediaItemById.zip"
-  source = data.archive_file.deleteMediaItemById_data.output_path
-  etag   = filemd5(data.archive_file.deleteMediaItemById_data.output_path)
 }
 
 #get all media items
@@ -77,25 +58,28 @@ resource "aws_s3_object" "serverless_getall_object" {
   etag   = filemd5(data.archive_file.getAllMediaItemsByUserId_data.output_path)
 }
 
-#get media by id
-resource "aws_s3_object" "serverless_getbyid_object" {
-  bucket = aws_s3_bucket.lambda_bucket_for_serverless_app.id
-  key    = "getMediaItemById.zip"
-  source = data.archive_file.getMediaItemById_data.output_path
-  etag   = filemd5(data.archive_file.getMediaItemById_data.output_path)
-}
-
-#update media item
-resource "aws_s3_object" "serverless_update_object" {
-  bucket = aws_s3_bucket.lambda_bucket_for_serverless_app.id
-  key    = "updateMediaItem.zip"
-  source = data.archive_file.updateMediaItem_data.output_path
-  etag   = filemd5(data.archive_file.updateMediaItem_data.output_path)
-}
-
 resource "aws_s3_object" "serverless_presigned_object" {
   bucket = aws_s3_bucket.lambda_bucket_for_serverless_app.id
-  key    = "getPresignedUrl.zip"
-  source = data.archive_file.getPresignedUrl_data.output_path
-  etag   = filemd5(data.archive_file.getPresignedUrl_data.output_path)
+  key    = "preSignedUrl.zip"
+  source = data.archive_file.preSignedUrl_data.output_path
+  etag   = filemd5(data.archive_file.preSignedUrl_data.output_path)
 }
+
+######## ADD MORE LAMBDA FUNCTIONS
+
+## NEW DATA SOURCE
+#data "archive_file" "<YOUR_NEW_LAMBDA_ARCHIVE_NAME>" {
+#  type        = "zip"
+#  source_dir  = "${var.local_lambda_source}/<LAMBDA_ARCHIVE_SOURCE_FOLDER_NAME>"
+#  output_path = "${path.module}/<LAMBDA_ARCHIVE_NAME>.zip"
+#}
+
+## NEW S3 OBJECT
+#delete media item
+#resource "aws_s3_object" "<S3_OBJECT_NAME>" {
+#  bucket = aws_s3_bucket.lambda_bucket_for_serverless_app.id
+#  key    = "<LAMBDA_ARCHIVE_NAME>.zip"
+#  source = data.archive_file.<YOUR_NEW_LAMBDA_ARCHIVE_NAME_FROM_ABOVE>.output_path
+#  etag   = filemd5(data.archive_file.<YOUR_NEW_LAMBDA_ARCHIVE_NAME_FROM_ABOVE>.output_path)
+#}
+

@@ -67,7 +67,7 @@ const NewMedia = () => {
 
         // get a presigned url from aws
         const responseData = await sendRequest(
-            `${process.env.REACT_APP_BACKEND_URL}/getPresignedUrl`,
+            `${process.env.REACT_APP_API_ENDPOINT}/preSignedUrl`,
             "POST",
             JSON.stringify({
                 filename: newFileName,
@@ -127,7 +127,7 @@ const NewMedia = () => {
             // formData.append("s3Filename", uploadedFile.key);
 
             await sendRequest(
-                `${process.env.REACT_APP_BACKEND_URL}/media/${auth.username}/new`,
+                `${process.env.REACT_APP_API_ENDPOINT}/media/${auth.username}/new`,
                 "POST",
                 //formData,
                 JSON.stringify({

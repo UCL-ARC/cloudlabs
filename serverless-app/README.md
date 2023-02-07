@@ -5,7 +5,7 @@ The web app is built on the React framework
 
 ## Requirements
 - You need to have completed ALL of the steps listed in the [Introduction](../Introduction.md)
-- You will need to have [React](https://reactjs.org) and other components [NodeJS](https://nodejs.org/en/) installed
+- In addition you will need to have [React](https://reactjs.org) and [NodeJS](https://nodejs.org/en/) installed
 
 # Web App Use Case
 
@@ -16,22 +16,26 @@ A common use case for web applications in research is to provide a service that 
 
 For this reason, we created an example app with the following features:
 - users to sign-up/log-in to the web app
-- create, read, update and delete images
-- view the images they have stored centrally.
+- create, read, update and delete images via the web app and store them in a database on AWS
+- view their images in the web app
 
 ## What to do with this example
 
-The purpose of this exercise is to provide a concrete example of how a serverless web app can be built on AWS.
-Feel free to use the code as a starting point for your own app.
+We want to show a more realistic example of a web service/application with an API, static website, user management and backend storage.
+Feel free to use and copy the code.
+However, you should realise that this is not production ready code
+- you will need to adapt the code to your requirements
+- you will probably want to add some additional features not included in this example (e.g. CloudFront to ensure a HTTPS connection, logging facilities etc)
+
 
 ## How to use this example
 - Follow the steps in [Introduction](../Introduction.md)
-- Follow the 4 steps in the [HowTo](./HowTo.md). Generally - do the Terraform Install first, then build/deploy the React app
+- The follow the steps in [HowTo](./HowTo.md). 
 
 ### Limitations
 
 - are lambda functions the best choice for my application? It is worthwhile reading through the documentation [https://aws.amazon.com/lambda/] . E.g. lambda functions need time to "ramp" up. In short, it may take some time before the function actually executes. In part, this can be mitigated with configuring lambda functions (caches, etc). Or by choosing a different architecture (e.g. EC2 instances)
-- Cognito is generally a useful service to handle authorisation and authentication. At UCL many services, however, run a mixed environment, whereby some users are UCL staff members and others are not. Some are researchers (UCL/non-UCL) with access to different functions than others. The configuration of Cognito will therefore be different to the simple example given here. You may also end up using 2 separate authorisation/authentication systems -> one for staff and one for non-UCL members.
+- Cognito is generally a useful service to handle authorisation and authentication. At UCL many services, however, run a mixed environment, whereby some users are UCL staff members and others are not. Some are researchers (UCL/non-UCL) who might need access to different functions than other users. The configuration of Cognito will therefore be different to the simple example given here. You may also end up using 2 separate authorisation/authentication systems -> one for staff and one for non-UCL members.
 - this app is very basic in the following sense:
    - there is no backup facility included. This would be necessary for an application holding user data. 
    - the app is running from a single availability zone. 
@@ -73,11 +77,11 @@ common security and safety features (e.g. OAuth 2 paths) are to be included. Cog
 | --------------- | ----------------- |
 | aws/lambda-functions | the source code for 5 lambda functions (create, delete, get all, get by ID, update) |
 | frontend | the source code for the React web-site |
-| terraforn | the scripts for building the AWS infrastructure |
+| terraform | the scripts for building the AWS infrastructure |
 
-## Files used in Terraform?
+## Files To Build the Infrastructure with Terraform
 
-The ```Terraform``` folder contains 4 terraform scripts 
+The ```Terraform``` folder contains a number of terraform and support files 
 
 | Script Name | What does it do |
 | --------------- | ----------------- |
@@ -93,4 +97,7 @@ The ```Terraform``` folder contains 4 terraform scripts
 | outputs.tf | captures the IDs of the Cognito user pool and user pool client. In addition it captures 3 variables that we will use in the React app |
 | assume_role_policy.json | AWS role policy for the use of lambda functions |
 | dynamodb_watch_policy.json | Policy for the use of the DynamoDB database and logging functions |
+| terraform.tfvars.example | Example file to set REQUIRED terraform environment variables. | 
+| create_env.sh | a shell script to create the ENV for the React web app AFTER the infrastructure was created |
+
 
