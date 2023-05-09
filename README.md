@@ -24,6 +24,7 @@ Although every cloud provider comes with a set of tools to build your applicatio
 
 At UCL [Terraform](https://www.terraform.io) is the preferred tool for infrastructure as code. And this is what you will find in this repository.
 
+
 # Examples, Design Patterns
 In this repository we want to give  "realistic" examples on the kind of cloud based applications you might want to build.
 
@@ -36,3 +37,10 @@ The examples should give you a good starting point for your own application.
 # What this repository is NOT
 - The examples and use cases given here should work as is. However, you will still need some work to adapt it to your project. 
 - Automatic deployment and testing of components not directly related to AWS (e.g. uploading your web app to an S3 bucket, setting environment variables etc) is NOT shown here. CI/CD (Continuous Integration/Con. Deployment) are subjects in their own right and beyond the scope of this repository.   
+
+# Troubleshooting
+
+## Terraform on Mac
+When you run the terraform and you are getting an error that says something like ' "terraform" will damage your Mac" ' -
+install [Terraform](https://www.terraform.io) from the official web-site again. The reason for this error that a security
+certificate expired and the only way around is to download the terraform executable again (or update it with brew). 

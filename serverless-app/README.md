@@ -1,5 +1,11 @@
 # AWS Serverless Web Example Application
 
+## NOTE May 2023
+There has been a change to the account settings. Creating S3 buckets as described in the terraform scripts is no longer
+permitted. The scripts will be updated to match the security requirements.
+
+## Introduction
+
 This example demonstrates how to build a web app in AWS using Terraform.
 The web app is built on the React framework 
 
