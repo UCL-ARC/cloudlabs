@@ -36,17 +36,6 @@ The policy document
 */
 
 # Define the general policy/permissions for lambda functions
-# This is restricted to DynamoDB only for now
-
-#resource "aws_iam_policy" "lambda_dynamodb_policy" {
-#  name = "lambda_policy_for_cloudwatch_dynamodb"
-#  policy = file("dynamodb_watch_policy.json")
-#}
-
-#resource "aws_iam_policy" "lambda_presigned_s3_policy" {
-#  name = "lambda_policy_for_s3_presignedurl"
-#  policy = file("s3_presignedurl_policy.json")
-#}
 
 # Define the role lambda functions will assume when executing
 resource "aws_iam_role" "lambda_exec_role" {
@@ -62,17 +51,5 @@ resource "aws_iam_role_policy_attachment" "lambda_multiple_attachment" {
     ])
   role       = aws_iam_role.lambda_exec_role.name
   policy_arn = each.value
-#  policy_arn = "${aws_iam_policy.lambda_dynamodb_policy.arn}"
 }
-
-
-#resource "aws_iam_role" "lambda_presigned_role" {
-#  name = "presigned_lambda_s3"
-#  assume_role_policy = file("assume_role_policy.json")
-#}
-
-#resource "aws_iam_role_policy_attachment" "lambda_s3_presigned_attachment" {
-#  role = aws_iam_role.lambda_presigned_role.name
-#  policy_arn = "${aws_iam_policy.lambda_presigned_s3_policy.arn}"
-#}
 

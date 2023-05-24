@@ -2,7 +2,7 @@ terraform {
   required_providers {
     aws = {
       source  = "hashicorp/aws"
-      version = "~> 4.0.0"
+      version = "~> 4.0"
     }
     random = {
       source  = "hashicorp/random"
@@ -18,7 +18,7 @@ terraform {
 }
 
 provider "aws" {
-  profile = "default"
+  profile = "AWSAdministratorAccess-570168576028"
   region  = var.aws_region
 }
 

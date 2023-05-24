@@ -29,16 +29,20 @@ resource "aws_s3_bucket" "lambda_bucket_for_serverless_app" {
   }
 }
 
+resource "aws_s3_bucket_ownership_controls" "lambda_ownership_controls" {
+  bucket = aws_s3_bucket.lambda_bucket_for_serverless_app.id
+  rule {
+    object_ownership = "BucketOwnerPreferred"
+  }
+}
+
+
 resource "aws_s3_bucket_acl" "lambda_bucket_acl" {
+  depends_on = [ aws_s3_bucket_ownership_controls.lambda_ownership_controls ]
   bucket = aws_s3_bucket.lambda_bucket_for_serverless_app.id
   acl    = "private"
 }
 
-resource "aws_s3_bucket_public_access_block" "s3_public_access_lambda" {
-  bucket = aws_s3_bucket.lambda_bucket_for_serverless_app.id
-  block_public_acls = true
-  restrict_public_buckets = true
-}
 
 
 #S3 Objects - these are the Zip'd lambda functions
