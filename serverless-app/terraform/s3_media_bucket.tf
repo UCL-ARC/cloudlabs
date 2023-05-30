@@ -7,6 +7,15 @@ resource "aws_s3_bucket" "media_for_serverless_app" {
   }
 }
 
+resource "aws_s3_bucket_public_access_block" "media_for_serverless_app" {
+  bucket = aws_s3_bucket.media_for_serverless_app.id
+
+  block_public_acls       = false
+  block_public_policy     = false
+  ignore_public_acls      = false
+  restrict_public_buckets = false
+}
+
 resource "aws_s3_bucket_ownership_controls" "media_ownership_controls" {
   bucket = aws_s3_bucket.media_for_serverless_app.id
   rule {
@@ -33,20 +42,41 @@ resource "aws_s3_bucket_cors_configuration" "s3_cors" {
 
 resource "aws_s3_bucket_policy" "serverless_app_media_policy" {
   bucket = aws_s3_bucket.media_for_serverless_app.id
-
-  policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Sid       = "ReadGetDeleteObject"
-        Effect    = "Allow"
-        Principal = "*"
-        Action    = ["s3:GetObject", "s3:DeleteObject", "s3:PutObject"]
-        Resource = [
-          aws_s3_bucket.media_for_serverless_app.arn,
-          "${aws_s3_bucket.media_for_serverless_app.arn}/*",
-        ]
-      },
-    ]
-  })
+  policy = data.aws_iam_policy_document.serverless_app_media_policy.json
 }
+
+data "aws_iam_policy_document" "serverless_app_media_policy" {
+  statement {
+
+    principals {
+      type        = "*"
+      identifiers = ["*"] 
+    }
+
+    effect = "Allow"
+  
+    actions = ["s3:GetObject", "s3:DeleteObject", "s3:PutObject"]
+
+    resources = [
+           aws_s3_bucket.media_for_serverless_app.arn,
+           "${aws_s3_bucket.media_for_serverless_app.arn}/*",
+    ]
+  }
+}
+
+#   policy = jsonencode({
+#     Version = "2012-10-17"
+#     Statement = [
+#       {
+#         Sid       = "ReadGetDeleteObject"
+#         Effect    = "Allow"
+#         Principal = "*"
+#         Action    = ["s3:GetObject", "s3:DeleteObject", "s3:PutObject"]
+#         Resource = [
+#           aws_s3_bucket.media_for_serverless_app.arn,
+#           "${aws_s3_bucket.media_for_serverless_app.arn}/*",
+#         ]
+#       },
+#     ]
+#   })
+# }
