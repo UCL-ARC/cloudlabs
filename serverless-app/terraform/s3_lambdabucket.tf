@@ -52,6 +52,8 @@ resource "aws_s3_object" "serverless_create_object" {
   key    = "createMediaItem.zip"
   source = data.archive_file.createMediaItem_data.output_path
   etag   = filemd5(data.archive_file.createMediaItem_data.output_path)
+
+  acl = "bucket-owner-full-control"
 }
 
 #get all media items
@@ -60,6 +62,8 @@ resource "aws_s3_object" "serverless_getall_object" {
   key    = "getAllMediaItemsByUserId.zip"
   source = data.archive_file.getAllMediaItemsByUserId_data.output_path
   etag   = filemd5(data.archive_file.getAllMediaItemsByUserId_data.output_path)
+
+  acl = "bucket-owner-full-control"
 }
 
 resource "aws_s3_object" "serverless_presigned_object" {
@@ -67,6 +71,8 @@ resource "aws_s3_object" "serverless_presigned_object" {
   key    = "preSignedUrl.zip"
   source = data.archive_file.preSignedUrl_data.output_path
   etag   = filemd5(data.archive_file.preSignedUrl_data.output_path)
+
+  acl = "bucket-owner-full-control"
 }
 
 ######## ADD MORE LAMBDA FUNCTIONS
