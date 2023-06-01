@@ -12,7 +12,7 @@ resource "aws_lambda_function" "createMediaItem_lambda" {
   function_name    = "CreateMediaItem"
   s3_bucket        = aws_s3_bucket.lambda_bucket_for_serverless_app.id
   s3_key           = aws_s3_object.serverless_create_object.key
-  runtime          = "nodejs12.x"
+  runtime          = "nodejs18.x"
   handler          = "index.handler"
   source_code_hash = data.archive_file.createMediaItem_data.output_base64sha256
   role             = aws_iam_role.lambda_exec_role.arn
@@ -30,7 +30,7 @@ resource "aws_lambda_function" "getAllMediaItemsByUserId_lambda" {
   function_name    = "GetAllMediaItemsByUserId"
   s3_bucket        = aws_s3_bucket.lambda_bucket_for_serverless_app.id
   s3_key           = aws_s3_object.serverless_getall_object.key
-  runtime          = "nodejs12.x"
+  runtime          = "nodejs18.x"
   handler          = "index.handler"
   source_code_hash = data.archive_file.getAllMediaItemsByUserId_data.output_base64sha256
   role             = aws_iam_role.lambda_exec_role.arn
@@ -48,7 +48,7 @@ resource "aws_lambda_function" "preSignedUrl_lambda" {
   function_name    = "preSignedUrl"
   s3_bucket        = aws_s3_bucket.lambda_bucket_for_serverless_app.id
   s3_key           = aws_s3_object.serverless_presigned_object.key
-  runtime          = "nodejs12.x"
+  runtime          = "nodejs18.x"
   handler          = "index.handler"
   source_code_hash = data.archive_file.preSignedUrl_data.output_base64sha256
   role             = aws_iam_role.lambda_exec_role.arn

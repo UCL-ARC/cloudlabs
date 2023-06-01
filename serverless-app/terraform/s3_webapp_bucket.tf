@@ -43,21 +43,22 @@ resource "aws_s3_bucket_website_configuration" "serverless_app_web_config" {
 }
 
 resource "aws_s3_bucket_policy" "serverless_app_web_policy" {
-  bucket = aws_s3_bucket.serverless_app_website.id
+  depends_on = [ aws_s3_bucket_public_access_block.web_access_block ]
+ bucket = aws_s3_bucket.serverless_app_website.id
 
-  policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Sid       = "PublicReadGetObject"
-        Effect    = "Allow"
-        Principal = "*"
-        Action    = "s3:GetObject"
-        Resource = [
-          aws_s3_bucket.serverless_app_website.arn,
-          "${aws_s3_bucket.serverless_app_website.arn}/*",
-        ]
-      },
-    ]
-  })
+ policy = jsonencode({
+   Version = "2012-10-17"
+   Statement = [
+     {
+       Sid       = "PublicReadGetObject"
+       Effect    = "Allow"
+       Principal = "*"
+       Action    = "s3:GetObject"
+       Resource = [
+         aws_s3_bucket.serverless_app_website.arn,
+         "${aws_s3_bucket.serverless_app_website.arn}/*",
+       ]
+     },
+   ]
+ })
 }

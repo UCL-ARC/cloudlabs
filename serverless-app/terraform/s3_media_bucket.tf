@@ -41,6 +41,7 @@ resource "aws_s3_bucket_cors_configuration" "s3_cors" {
 }
 
 resource "aws_s3_bucket_policy" "serverless_app_media_policy" {
+  depends_on = [ aws_s3_bucket_public_access_block.media_for_serverless_app ]
   bucket = aws_s3_bucket.media_for_serverless_app.id
   policy = data.aws_iam_policy_document.serverless_app_media_policy.json
 }

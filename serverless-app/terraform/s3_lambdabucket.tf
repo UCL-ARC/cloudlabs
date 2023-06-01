@@ -22,7 +22,7 @@ data "archive_file" "preSignedUrl_data" {
 ### BUCKET FOR THE LAMBDA FUNCTIONS
 #S3 Bucket to store the lambda functions and web app in
 resource "aws_s3_bucket" "lambda_bucket_for_serverless_app" {
-  bucket = "terraform-bucketforlambdafunctions"
+  bucket = var.s3_lambda_bucket_name
   force_destroy = true
   tags = {
     Name = "bucketforlambdafunctions"

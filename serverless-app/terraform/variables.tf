@@ -14,6 +14,11 @@ variable "s3_media_bucket_name" {
   type = string
 }
 
+variable "s3_lambda_bucket_name" {
+  description = "AWS S3 bucket for lambda functions"
+  type = string
+}
+
 variable "dynamodb_name" {
   description = "AWS DynamoDB"
   type = string
