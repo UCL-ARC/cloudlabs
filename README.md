@@ -20,6 +20,9 @@ arc-playpen-collaboration
 
 Contact for further info: Ben Thomas (ARC)
 
+**Note**: this AWS space is **not** for production code or code that is used in research projects. For this you will need a
+AWS dedicated space within the UCL/AWS account. See the introductions for further details.
+
 ## Requirements
 You will need
 - an account for AWS, see [Introduction](./Introduction.md)
