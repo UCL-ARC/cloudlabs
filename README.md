@@ -8,6 +8,18 @@ UCL provides access to AWS (Amazon Web Services) and Azure (Microsoft) via the
 With this repository we want to provide help, concrete examples and advise on to create applications
 in AWS (and possibly later, Azure). 
 
+# Cloudlab and Cloud "Playpens" in ARC
+
+Each team in the Advanced Research Computing Centre has a dedicated "playpen" in AWS. This space
+is reserved for proto-typing and experimenting. 
+It is a great space to start at. Ask your ARC team, which of the "playpens" are available to your team.
+E.g. in the 'Collaborations' team there is
+```
+arc-playpen-collaboration
+```
+
+Contact for further info: Ben Thomas (ARC)
+
 ## Requirements
 You will need
 - an account for AWS, see [Introduction](./Introduction.md)
